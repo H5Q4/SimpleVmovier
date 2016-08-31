@@ -8,7 +8,7 @@ import com.github.jupittar.commlib.utilities.ToastUtils;
 import com.github.jupittar.vmovier.activities.BackstageDetailActivity;
 import com.github.jupittar.vmovier.activities.MovieDetailActivity;
 import com.github.jupittar.vmovier.activities.VideoPlayActivity;
-import com.github.jupittar.vmovier.models.MovieDetail;
+import com.github.jupittar.vmovier.data.models.MovieDetail;
 
 import java.util.List;
 

@@ -3,7 +3,7 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:statusBarColor">@color/material_blue_grey_dark</item>
+        <item name="android:statusBarColor">?colorPrimaryDark</item>
     </style>
 
     <style name="AppTheme.DrawsSystemBarBg" parent="AppTheme.NoActionBar">

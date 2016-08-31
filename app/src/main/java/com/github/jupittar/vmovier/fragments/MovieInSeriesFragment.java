@@ -15,7 +15,7 @@ import com.github.jupittar.commlib.rxbus.RxBus;
 import com.github.jupittar.vmovier.R;
 import com.github.jupittar.vmovier.activities.SeriesDetailActivity;
 import com.github.jupittar.vmovier.adapters.MoviesInSeriesAdapter;
-import com.github.jupittar.vmovier.models.SeriesDetail;
+import com.github.jupittar.vmovier.data.models.SeriesDetail;
 
 import butterknife.BindView;
 

@@ -97,7 +97,11 @@ public class AutoScrollPager extends RelativeLayout {
     private Runnable mAutoPlayRunnable = new Runnable() {
         @Override
         public void run() {
-            mViewPager.setCurrentItem(++mCurrentIndex);
+            mCurrentIndex++;
+            if (mCurrentIndex > mAdapter.getCount()) {
+                mCurrentIndex = 0;
+            }
+            mViewPager.setCurrentItem(mCurrentIndex);
         }
     };
 

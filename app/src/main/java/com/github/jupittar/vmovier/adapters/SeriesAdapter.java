@@ -9,7 +9,7 @@ import com.github.jupittar.commlib.custom.AspectRatioImageView;
 import com.github.jupittar.commlib.custom.recyclerview.CommonViewHolder;
 import com.github.jupittar.commlib.custom.recyclerview.adapter.CommonViewAdapter;
 import com.github.jupittar.vmovier.R;
-import com.github.jupittar.vmovier.models.Series;
+import com.github.jupittar.vmovier.data.models.Series;
 
 
 public class SeriesAdapter extends CommonViewAdapter<Series> {

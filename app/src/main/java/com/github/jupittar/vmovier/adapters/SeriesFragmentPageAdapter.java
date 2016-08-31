@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import com.github.jupittar.commlib.custom.SCViewPager;
 import com.github.jupittar.vmovier.fragments.MovieInSeriesFragment;
-import com.github.jupittar.vmovier.models.SeriesDetail;
+import com.github.jupittar.vmovier.data.models.SeriesDetail;
 
 import java.util.List;
 

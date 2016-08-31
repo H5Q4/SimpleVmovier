@@ -11,13 +11,13 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
 
-import com.github.jupittar.commlib.base.BaseActivity;
+import com.github.jupittar.commlib.base.SubscriptionActivity;
 import com.github.jupittar.vmovier.AndroidCalledByJs;
 import com.github.jupittar.vmovier.R;
 import com.github.jupittar.vmovier.Utils;
-import com.github.jupittar.vmovier.models.MovieDetail;
-import com.github.jupittar.vmovier.network.ExtractDataFunc;
-import com.github.jupittar.vmovier.network.ServiceGenerator;
+import com.github.jupittar.vmovier.data.models.MovieDetail;
+import com.github.jupittar.vmovier.data.source.remote.ExtractDataFunc;
+import com.github.jupittar.vmovier.data.source.remote.ServiceGenerator;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -28,7 +28,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-public class BackstageDetailActivity extends BaseActivity {
+public class BackstageDetailActivity extends SubscriptionActivity {
 
     public static final String POST_ID = "post_id";
     public static final String DETAIL_URL = "detail_url";

@@ -11,9 +11,9 @@ import com.github.jupittar.commlib.base.LazyFragment;
 import com.github.jupittar.commlib.custom.SCViewPager;
 import com.github.jupittar.vmovier.R;
 import com.github.jupittar.vmovier.adapters.BackstageFragmentPageAdapter;
-import com.github.jupittar.vmovier.models.BackstageCategory;
-import com.github.jupittar.vmovier.network.ExtractDataFunc;
-import com.github.jupittar.vmovier.network.ServiceGenerator;
+import com.github.jupittar.vmovier.data.models.BackstageCategory;
+import com.github.jupittar.vmovier.data.source.remote.ExtractDataFunc;
+import com.github.jupittar.vmovier.data.source.remote.ServiceGenerator;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -25,6 +25,8 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class BackstageFragment extends LazyFragment {
+
+    public static final int MENU_INDEX_BACKSTAGE = 3;
 
     @BindView(R.id.tab_layout)
     TabLayout mTabLayout;

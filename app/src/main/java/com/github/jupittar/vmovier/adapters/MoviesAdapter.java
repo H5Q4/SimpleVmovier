@@ -10,7 +10,7 @@ import com.github.jupittar.commlib.custom.recyclerview.CommonViewHolder;
 import com.github.jupittar.commlib.custom.recyclerview.adapter.SectionedViewAdapter;
 import com.github.jupittar.commlib.custom.recyclerview.entity.SectionedItem;
 import com.github.jupittar.vmovier.R;
-import com.github.jupittar.vmovier.models.Movie;
+import com.github.jupittar.vmovier.data.models.Movie;
 
 import java.util.Locale;
 

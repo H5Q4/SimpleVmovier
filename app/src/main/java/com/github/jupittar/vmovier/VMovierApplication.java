@@ -2,7 +2,7 @@ package com.github.jupittar.vmovier;
 
 import android.app.Application;
 
-import com.github.jupittar.vmovier.network.ServiceGenerator;
+import com.github.jupittar.vmovier.data.source.remote.ServiceGenerator;
 import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
 import com.squareup.leakcanary.LeakCanary;

@@ -10,15 +10,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.github.jupittar.commlib.base.BaseActivity;
+import com.github.jupittar.commlib.base.SubscriptionActivity;
 import com.github.jupittar.commlib.custom.recyclerview.EndlessScrollListener;
 import com.github.jupittar.commlib.custom.recyclerview.adapter.CommonViewAdapter;
 import com.github.jupittar.vmovier.R;
 import com.github.jupittar.vmovier.adapters.MoviesInCateAdapter;
-import com.github.jupittar.vmovier.models.Category;
-import com.github.jupittar.vmovier.models.Movie;
-import com.github.jupittar.vmovier.network.ExtractDataFunc;
-import com.github.jupittar.vmovier.network.ServiceGenerator;
+import com.github.jupittar.vmovier.data.models.Category;
+import com.github.jupittar.vmovier.data.models.Movie;
+import com.github.jupittar.vmovier.data.source.remote.ExtractDataFunc;
+import com.github.jupittar.vmovier.data.source.remote.ServiceGenerator;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -29,7 +29,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class CategoryMoviesActivity extends BaseActivity {
+public class CategoryMoviesActivity extends SubscriptionActivity {
 
     public static final String CATEGORY = "Category";
 

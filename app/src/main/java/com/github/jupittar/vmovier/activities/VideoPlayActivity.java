@@ -9,12 +9,12 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.devbrackets.android.exomedia.EMVideoView;
-import com.github.jupittar.commlib.base.BaseActivity;
+import com.github.jupittar.commlib.base.SubscriptionActivity;
 import com.github.jupittar.vmovier.R;
 
 import butterknife.BindView;
 
-public class VideoPlayActivity extends BaseActivity implements MediaPlayer.OnPreparedListener {
+public class VideoPlayActivity extends SubscriptionActivity implements MediaPlayer.OnPreparedListener {
 
     public static final String VIDEO_URL = "video_url";
 

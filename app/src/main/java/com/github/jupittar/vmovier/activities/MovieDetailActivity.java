@@ -20,15 +20,15 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
-import com.github.jupittar.commlib.base.BaseActivity;
+import com.github.jupittar.commlib.base.SubscriptionActivity;
 import com.github.jupittar.commlib.custom.AspectRatioImageView;
 import com.github.jupittar.commlib.custom.LoadingImageView;
 import com.github.jupittar.vmovier.AndroidCalledByJs;
 import com.github.jupittar.vmovier.R;
 import com.github.jupittar.vmovier.Utils;
-import com.github.jupittar.vmovier.models.MovieDetail;
-import com.github.jupittar.vmovier.network.ExtractDataFunc;
-import com.github.jupittar.vmovier.network.ServiceGenerator;
+import com.github.jupittar.vmovier.data.models.MovieDetail;
+import com.github.jupittar.vmovier.data.source.remote.ExtractDataFunc;
+import com.github.jupittar.vmovier.data.source.remote.ServiceGenerator;
 import com.orhanobut.logger.Logger;
 
 import butterknife.BindView;
@@ -36,7 +36,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-public class MovieDetailActivity extends BaseActivity {
+public class MovieDetailActivity extends SubscriptionActivity {
 
     public static final String POST_ID = "post_id";
     public static final String WEB_VIEW_URL = "WebView_url";

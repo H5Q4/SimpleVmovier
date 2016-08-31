@@ -16,17 +16,17 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.github.jupittar.commlib.base.BaseActivity;
+import com.github.jupittar.commlib.base.SubscriptionActivity;
 import com.github.jupittar.commlib.custom.AspectRatioImageView;
 import com.github.jupittar.commlib.custom.SCViewPager;
 import com.github.jupittar.commlib.rxbus.BusSubscriber;
 import com.github.jupittar.commlib.rxbus.RxBus;
 import com.github.jupittar.vmovier.R;
 import com.github.jupittar.vmovier.adapters.SeriesFragmentPageAdapter;
-import com.github.jupittar.vmovier.models.SeriesDetail;
-import com.github.jupittar.vmovier.models.SeriesVideo;
-import com.github.jupittar.vmovier.network.ExtractDataFunc;
-import com.github.jupittar.vmovier.network.ServiceGenerator;
+import com.github.jupittar.vmovier.data.models.SeriesDetail;
+import com.github.jupittar.vmovier.data.models.SeriesVideo;
+import com.github.jupittar.vmovier.data.source.remote.ExtractDataFunc;
+import com.github.jupittar.vmovier.data.source.remote.ServiceGenerator;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -37,7 +37,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-public class SeriesDetailActivity extends BaseActivity {
+public class SeriesDetailActivity extends SubscriptionActivity {
 
     public static final String SERIES_ID = "series_id";
     public static final String BUS_EVENT_CLICK_VIDEO = "bus_event_click_video";

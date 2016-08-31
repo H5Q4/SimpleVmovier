@@ -4,8 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.github.jupittar.vmovier.fragments.BackstageByCateFragment;
-import com.github.jupittar.vmovier.models.BackstageCategory;
+import com.github.jupittar.vmovier.fragments.BackstageArticlesFragment;
+import com.github.jupittar.vmovier.data.models.BackstageCategory;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class BackstageFragmentPageAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return BackstageByCateFragment.newInstance(mCategories.get(position).getCateid());
+        return BackstageArticlesFragment.newInstance(mCategories.get(position).getCateid());
     }
 
     @Override

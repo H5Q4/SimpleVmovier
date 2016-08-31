@@ -2,17 +2,17 @@ package com.github.jupittar.vmovier.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
-import com.github.jupittar.commlib.base.BaseActivity;
+import com.github.jupittar.commlib.base.SubscriptionActivity;
 import com.github.jupittar.vmovier.R;
+import com.github.jupittar.vmovier.ui.main.MainActivity;
 
 import butterknife.BindView;
 
-public class SplashActivity extends BaseActivity {
+public class SplashActivity extends SubscriptionActivity {
 
     @BindView(R.id.bg_iv)
     ImageView mSplashImageView;

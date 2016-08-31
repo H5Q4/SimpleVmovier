@@ -2,7 +2,7 @@ package com.github.jupittar.commlib.base;
 
 import android.os.Bundle;
 
-public abstract class LazyFragment extends BaseFragment {
+public abstract class LazyFragment extends SubscriptionFragment {
 
     private boolean mIsPrepared;
     private boolean mIsFirstResume = true;
