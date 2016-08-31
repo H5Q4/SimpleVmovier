@@ -1,0 +1,33 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@android:color/black"
+             android:fitsSystemWindows="true">
+
+    <ImageView
+        android:id="@+id/bg_iv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/iv_content_desc"
+        android:scaleType="centerCrop"
+        android:src="@drawable/splash_background"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="42dp"
+        android:contentDescription="@string/iv_content_desc"
+        android:src="@drawable/loading_logo"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="42dp"
+        android:gravity="center"
+        android:text="感悟人生只需一刻钟"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:textColor="@android:color/white"/>
+
+</FrameLayout>
