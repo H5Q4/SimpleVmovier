@@ -5,7 +5,7 @@ import android.os.Bundle;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
-public class SubscriptionActivity extends ButterActivity {
+public class SubscriptionActivity extends ButterKnifeActivity {
 
     private CompositeSubscription mCompositeSubscription;
 
