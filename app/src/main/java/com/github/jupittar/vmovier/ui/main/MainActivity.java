@@ -158,7 +158,6 @@ public class MainActivity extends SubscriptionActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -178,11 +177,6 @@ public class MainActivity extends SubscriptionActivity
             position = BackstageFragment.MENU_INDEX_BACKSTAGE;
             title = "幕后";
 
-        } else if (id == R.id.nav_share) {
-            return true;
-
-        } else if (id == R.id.nav_send) {
-            return true;
         }
 
         mViewPager.setCurrentItem(position, false);
