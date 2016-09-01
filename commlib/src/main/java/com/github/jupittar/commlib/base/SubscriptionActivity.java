@@ -1,15 +1,11 @@
 package com.github.jupittar.commlib.base;
 
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
-import android.support.v7.app.AppCompatActivity;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
-public class SubscriptionActivity extends ButterKnifeActivity {
+public class SubscriptionActivity extends ButterActivity {
 
     private CompositeSubscription mCompositeSubscription;
 
