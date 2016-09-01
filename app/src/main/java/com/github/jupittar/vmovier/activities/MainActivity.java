@@ -2,6 +2,7 @@ package com.github.jupittar.vmovier.activities;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -23,6 +24,7 @@ import com.github.jupittar.commlib.base.BaseActivity;
 import com.github.jupittar.commlib.custom.SCViewPager;
 import com.github.jupittar.commlib.rxbus.BusSubscriber;
 import com.github.jupittar.commlib.rxbus.RxBus;
+import com.github.jupittar.commlib.utilities.ToastUtils;
 import com.github.jupittar.vmovier.R;
 import com.github.jupittar.vmovier.adapters.ContentFragmentPageAdapter;
 import com.github.jupittar.vmovier.fragments.BackstageFragment;
@@ -51,6 +53,8 @@ public class MainActivity extends BaseActivity
     TextSwitcher mTitleSwitcher;
     @BindView(R.id.view_pager)
     SCViewPager mViewPager;
+
+    private boolean mExit;
 
 
     @Override
@@ -127,7 +131,19 @@ public class MainActivity extends BaseActivity
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if (mExit) {
+                finish();
+            } else {
+                mExit = true;
+                ToastUtils.showShort(MainActivity.this, "再按一次退出应用");
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mExit = false;
+                    }
+                }, 2000);
+            }
+
         }
     }
 
