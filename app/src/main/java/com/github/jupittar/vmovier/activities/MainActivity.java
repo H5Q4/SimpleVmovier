@@ -144,7 +144,6 @@ public class MainActivity extends BaseActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -164,13 +163,7 @@ public class MainActivity extends BaseActivity
             position = 3;
             title = "幕后";
 
-        } else if (id == R.id.nav_share) {
-            return true;
-
-        } else if (id == R.id.nav_send) {
-            return true;
         }
-
         mViewPager.setCurrentItem(position, false);
         mTitleSwitcher.setCurrentText(title);
         mDrawerLayout.closeDrawer(GravityCompat.START);
