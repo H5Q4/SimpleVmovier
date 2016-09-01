@@ -10,7 +10,6 @@ import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
 public class ButterKnifeActivity extends AppCompatActivity {
-
     private Unbinder mUnbinder;
 
     @Override
