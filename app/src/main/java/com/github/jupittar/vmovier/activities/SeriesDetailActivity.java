@@ -42,28 +42,17 @@ public class SeriesDetailActivity extends BaseActivity {
     public static final String SERIES_ID = "series_id";
     public static final String BUS_EVENT_CLICK_VIDEO = "bus_event_click_video";
 
-    @BindView(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout mCollapsingToolbarLayout;
-    @BindView(R.id.app_bar)
-    AppBarLayout mAppBarLayout;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.video_thumbnail_iv)
-    AspectRatioImageView mThumbnailImageView;
-    @BindView(R.id.title_tv)
-    TextView mTitleTextView;
-    @BindView(R.id.info_tv)
-    TextView mInfoTextView;
-    @BindView(R.id.brief_tv)
-    TextView mBriefTextView;
-    @BindView(R.id.tag_tv)
-    TextView mTagTextView;
-    @BindView(R.id.tab_layout)
-    TabLayout mTabLayout;
-    @BindView(R.id.view_pager)
-    SCViewPager mViewPager;
-    @BindView(R.id.play_fab)
-    FloatingActionButton mPlayButton;
+    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout mCollapsingToolbarLayout;
+    @BindView(R.id.app_bar) AppBarLayout mAppBarLayout;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.video_thumbnail_iv) AspectRatioImageView mThumbnailImageView;
+    @BindView(R.id.title_tv) TextView mTitleTextView;
+    @BindView(R.id.info_tv) TextView mInfoTextView;
+    @BindView(R.id.brief_tv) TextView mBriefTextView;
+    @BindView(R.id.tag_tv) TextView mTagTextView;
+    @BindView(R.id.tab_layout) TabLayout mTabLayout;
+    @BindView(R.id.view_pager) SCViewPager mViewPager;
+    @BindView(R.id.play_fab) FloatingActionButton mPlayButton;
 
     private String mVideoUrl;
 
@@ -122,7 +111,8 @@ public class SeriesDetailActivity extends BaseActivity {
         mViewPager.setScrollEnabled(false);
         mViewPager.setWrapContent(true);
         List<SeriesDetail.Posts> posts = detail.getPosts();
-        SeriesFragmentPageAdapter pageAdapter = new SeriesFragmentPageAdapter(getSupportFragmentManager(), posts);
+        SeriesFragmentPageAdapter pageAdapter
+            = new SeriesFragmentPageAdapter(getSupportFragmentManager(), posts);
         mViewPager.setAdapter(pageAdapter);
         mViewPager.setOffscreenPageLimit(pageAdapter.getCount());
     }
@@ -207,8 +197,10 @@ public class SeriesDetailActivity extends BaseActivity {
         mCollapsingToolbarLayout.setCollapsedTitleTypeface(Typeface.createFromAsset(getAssets(),
             "fonts/Lobster-Regular.ttf"));
         mCollapsingToolbarLayout.setTitle(getString(R.string.app_name));
-        mCollapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, android.R.color.transparent));
-        mCollapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(this, android.R.color.white));
+        mCollapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this,
+            android.R.color.transparent));
+        mCollapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(this,
+            android.R.color.white));
     }
 
     @Override

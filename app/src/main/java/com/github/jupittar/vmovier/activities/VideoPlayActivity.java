@@ -18,10 +18,8 @@ public class VideoPlayActivity extends BaseActivity implements MediaPlayer.OnPre
 
     public static final String VIDEO_URL = "video_url";
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.em_video_view)
-    EMVideoView mVideoView;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.em_video_view) EMVideoView mVideoView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +53,8 @@ public class VideoPlayActivity extends BaseActivity implements MediaPlayer.OnPre
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         if (mVideoView.isPlaying()) {
             mVideoView.pause();
         }

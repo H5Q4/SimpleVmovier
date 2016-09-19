@@ -24,8 +24,6 @@ public class AndroidCalledByJs {
     public void onClickRecommendMovie(String postId) {
         Intent intent = new Intent(mContext, MovieDetailActivity.class);
         intent.putExtra(MovieDetailActivity.POST_ID, postId);
-        intent.putExtra(MovieDetailActivity.WEB_VIEW_URL,
-            String.format("http://app.vmoiver.com/%s?qingapp=app_new", postId));
         mContext.startActivity(intent);
     }
 

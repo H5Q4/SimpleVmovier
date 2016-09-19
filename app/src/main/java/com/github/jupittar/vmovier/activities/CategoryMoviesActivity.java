@@ -74,7 +74,6 @@ public class CategoryMoviesActivity extends BaseActivity {
                 Movie movie = mMoviesAdapter.getItemList().get(position);
                 Intent intent = new Intent(CategoryMoviesActivity.this, MovieDetailActivity.class);
                 intent.putExtra(MovieDetailActivity.POST_ID, movie.getPostid());
-                intent.putExtra(MovieDetailActivity.WEB_VIEW_URL, movie.getRequest_url());
                 startActivity(intent);
             }
         });

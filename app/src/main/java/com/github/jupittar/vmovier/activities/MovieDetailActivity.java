@@ -39,33 +39,25 @@ import rx.schedulers.Schedulers;
 public class MovieDetailActivity extends BaseActivity {
 
     public static final String POST_ID = "post_id";
-    public static final String WEB_VIEW_URL = "WebView_url";
 
-    @BindView(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout mCollapsingToolbarLayout;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.web_view)
-    WebView mWebView;
-    @BindView(R.id.video_thumbnail_iv)
-    AspectRatioImageView mThumbnailImageView;
-    @BindView(R.id.play_fab)
-    FloatingActionButton mPlayButton;
-    @BindView(R.id.loading_iv)
-    LoadingImageView mLoadingImageView;
-    @BindView(R.id.reload_btn)
-    Button mReloadButton;
-    @BindView(R.id.error_ll)
-    LinearLayout mErrorLayout;
-    @BindView(R.id.main_content)
-    View mContentMain;
+    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout mCollapsingToolbarLayout;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.web_view) WebView mWebView;
+    @BindView(R.id.video_thumbnail_iv) AspectRatioImageView mThumbnailImageView;
+    @BindView(R.id.play_fab) FloatingActionButton mPlayButton;
+    @BindView(R.id.loading_iv) LoadingImageView mLoadingImageView;
+    @BindView(R.id.reload_btn) Button mReloadButton;
+    @BindView(R.id.error_ll) LinearLayout mErrorLayout;
+    @BindView(R.id.main_content) View mContentMain;
 
     private String mVideoUrl;
+    private String mPostId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
+        mPostId = getIntent().getStringExtra(POST_ID);
         setUpToolbar();
         setUpWebView();
         fetchMovieDetail();
@@ -102,14 +94,14 @@ public class MovieDetailActivity extends BaseActivity {
         mCollapsingToolbarLayout.setCollapsedTitleTypeface(Typeface.createFromAsset(getAssets(),
             "fonts/Lobster-Regular.ttf"));
         mCollapsingToolbarLayout.setTitle(getString(R.string.app_name));
-        mCollapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, android.R.color.transparent));
-        mCollapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(this, android.R.color.white));
+        mCollapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this,
+            android.R.color.transparent));
+        mCollapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(this,
+            android.R.color.white));
     }
 
     private void fetchMovieDetail() {
-        String movieId = getIntent().getStringExtra(POST_ID);
-        final String requestUrl = getIntent().getStringExtra(WEB_VIEW_URL);
-        ServiceGenerator.getVMovieService().getMovieDetail(movieId)
+        ServiceGenerator.getVMovieService().getMovieDetail(mPostId)
             .map(new ExtractDataFunc<MovieDetail>())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -120,7 +112,9 @@ public class MovieDetailActivity extends BaseActivity {
                         .load(movieDetail.getImage())
                         .centerCrop()
                         .into(mThumbnailImageView);
-                    mWebView.loadUrl(requestUrl);
+                    mWebView.loadUrl(String.format(
+                        "http://app.vmoiver.com/%s?qingapp=app_new",
+                        mPostId));
                     mCollapsingToolbarLayout.setTitle(movieDetail.getTitle());
                     mVideoUrl = movieDetail.getContent().getVideo().get(0).getQiniu_url();
                     mPlayButton.setVisibility(View.VISIBLE);
@@ -144,7 +138,6 @@ public class MovieDetailActivity extends BaseActivity {
         WebSettings webSettings = mWebView.getSettings();
 
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setAllowUniversalAccessFromFileURLs(true);
         mWebView.setWebViewClient(new WebViewClient() {
 
             @Override

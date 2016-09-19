@@ -15,6 +15,13 @@
     window.android.onClickRecommendMovie(id);
   });
 
+  $('.fp-play').off('click');
+  $('.fp-play').on('click', (event)=> {
+    const $this = $(event.currentTarget);
+    const id = $this.data('id');
+    window.android.onClickRecommendMovie(id);
+  });
+
   const links = document.getElementsByTagName('a');
   for (var i = 0; i < links.length; i++) {
     const link = links.item(i);

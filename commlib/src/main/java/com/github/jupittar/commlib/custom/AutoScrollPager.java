@@ -157,7 +157,7 @@ public class AutoScrollPager extends RelativeLayout {
         mIndicators = new ImageView[count];
         for (int i = 0; i < count; i++) {
             mIndicator = new ImageView(mContext);
-            int widthParams = (int) (mScale * 12 + 0.5f);// XP与DP转换，适应不同分辨率
+            int widthParams = (int) (mScale * 18 + 0.5f);// XP与DP转换，适应不同分辨率
             int heightParams = (int) (mScale * 4 + 0.5f);
             int imageMargin = (int) (mScale * 3 + 0.5f);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(widthParams,
@@ -270,6 +270,35 @@ public class AutoScrollPager extends RelativeLayout {
     }
 
     /**
+     * 转换为真实position
+     */
+    private int convertToRealPosition(int position) {
+        return position % mIndicators.length;
+    }
+
+    /**
+     * callback
+     */
+    public interface AutoScrollPagerListener {
+
+        /**
+         * 加载图片
+         */
+        void displayImage(String imgUrl, ImageView imageView);
+
+        /**
+         * 设置图片标题
+         */
+        void setTitle(int position, TextView textView);
+
+        /**
+         * 响应图片的点击事件
+         */
+        void onImageClick(int position, ImageView imageView);
+
+    }
+
+    /**
      * adapter
      */
     private class MyPagerAdapter extends PagerAdapter {
@@ -329,36 +358,6 @@ public class AutoScrollPager extends RelativeLayout {
             container.removeView(imageView);
             mCachedImageViews.add(imageView);
         }
-    }
-
-    /**
-     * 转换为真实position
-     */
-    private int convertToRealPosition(int position) {
-        return position % mIndicators.length;
-    }
-
-
-    /**
-     * callback
-     */
-    public interface AutoScrollPagerListener {
-
-        /**
-         * 加载图片
-         */
-        void displayImage(String imgUrl, ImageView imageView);
-
-        /**
-         * 设置图片标题
-         */
-        void setTitle(int position, TextView textView);
-
-        /**
-         * 响应图片的点击事件
-         */
-        void onImageClick(int position, ImageView imageView);
-
     }
 
 

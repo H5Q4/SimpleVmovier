@@ -16,8 +16,8 @@
         android:theme="@style/AppTheme.NoActionBar">
         <activity
             android:name=".activities.SplashActivity"
-            android:theme="@style/AppThemeFullScreen"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeFullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -39,12 +39,13 @@
             android:name=".activities.SeriesDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.DrawsSystemBarBg"/>
-        <activity
-            android:name=".activities.BackstageDetailActivity"/>
+        <activity android:name=".activities.BackstageDetailActivity"/>
         <activity
             android:name=".activities.VideoPlayActivity"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.DrawsSystemBarBg">
+        </activity>
+        <activity android:name=".activities.WebViewActivity">
         </activity>
     </application>
 

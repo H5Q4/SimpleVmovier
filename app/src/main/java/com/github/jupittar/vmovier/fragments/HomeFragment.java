@@ -29,9 +29,11 @@ import com.github.jupittar.vmovier.R;
 import com.github.jupittar.vmovier.VMovierApplication;
 import com.github.jupittar.vmovier.activities.MainActivity;
 import com.github.jupittar.vmovier.activities.MovieDetailActivity;
+import com.github.jupittar.vmovier.activities.WebViewActivity;
 import com.github.jupittar.vmovier.adapters.MoviesAdapter;
 import com.github.jupittar.vmovier.models.Banner;
 import com.github.jupittar.vmovier.models.Movie;
+import com.github.jupittar.vmovier.models.MovieDetail;
 import com.github.jupittar.vmovier.network.ExtractDataFunc;
 import com.github.jupittar.vmovier.network.ServiceGenerator;
 import com.orhanobut.logger.Logger;
@@ -53,6 +55,9 @@ import rx.schedulers.Schedulers;
 
 public class HomeFragment extends LazyFragment {
 
+    private static final int TYPE_WEB_PAGE = 1;
+    private static final int TYPE_MOVIE = 2;
+
     @BindView(R.id.reload_btn)
     Button mReloadButton;
     @BindView(R.id.error_ll)
@@ -66,7 +71,8 @@ public class HomeFragment extends LazyFragment {
 
     private int mPage = 1;
     private MoviesAdapter mMoviesAdapter;
-    private DateFormat mDateFormat = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.ENGLISH);
+    private DateFormat mDateFormat
+        = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.ENGLISH);
 
     public HomeFragment() {
         // Required empty public constructor
@@ -88,9 +94,10 @@ public class HomeFragment extends LazyFragment {
     }
 
     private void setUpBanner() {
-        LinearLayout banner = (LinearLayout) LayoutInflater.from(getActivity()).inflate(R.layout.banner, null);
-        mBanner = (AutoScrollPager) banner.findViewById(R.id.banner);
-        banner.removeView(mBanner);
+        LinearLayout bannerContainer = (LinearLayout) LayoutInflater.from(getActivity())
+            .inflate(R.layout.banner, null);
+        mBanner = (AutoScrollPager) bannerContainer.findViewById(R.id.banner);
+        bannerContainer.removeView(mBanner);
         fetchBanner();
     }
 
@@ -101,7 +108,7 @@ public class HomeFragment extends LazyFragment {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new Action1<List<Banner>>() {
                 @Override
-                public void call(List<Banner> banners) {
+                public void call(final List<Banner> banners) {
                     List<String> imageUrls = new ArrayList<>();
                     for (Banner banner :
                         banners) {
@@ -123,7 +130,32 @@ public class HomeFragment extends LazyFragment {
 
                         @Override
                         public void onImageClick(int position, ImageView imageView) {
-
+                            Banner banner = banners.get(position);
+                            String bannerType = banner.getExtra_data().getApp_banner_type();
+                            Intent intent = new Intent();
+                            Bundle bundle = new Bundle();
+                            switch (Integer.parseInt(bannerType)) {
+                                case TYPE_WEB_PAGE:
+                                    bundle.putString(WebViewActivity.KEY_URL,
+                                        banner.getExtra_data().getApp_banner_param());
+                                    intent.setClass(getActivity(),
+                                        WebViewActivity.class);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+                                    break;
+                                case TYPE_MOVIE:
+                                    boolean isAlbum = banner.getExtra_data().getIs_album()
+                                        .equals("1");
+                                    if (!isAlbum) {
+                                        bundle.putString(MovieDetailActivity.POST_ID,
+                                            banner.getExtra_data().getApp_banner_param());
+                                        intent.putExtras(bundle);
+                                        intent.setClass(getActivity(), MovieDetailActivity.class);
+                                        startActivity(intent);
+                                        return;
+                                    }
+                                    break;
+                            }
                         }
                     });
                 }
@@ -141,7 +173,8 @@ public class HomeFragment extends LazyFragment {
         mMovieRecyclerView.setLayoutManager(linearLayoutManager);
         mMovieRecyclerView.setHasFixedSize(true);
         mMovieRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mMoviesAdapter = new MoviesAdapter(getActivity(), R.layout.item_movie, R.layout.item_section);
+        mMoviesAdapter = new MoviesAdapter(getActivity(), R.layout.item_movie,
+            R.layout.item_section);
         mMoviesAdapter.addHeaderView(mBanner);
         mMoviesAdapter.setOnItemClickListener(new CommonViewAdapter.OnItemClickListener() {
             @Override
@@ -157,7 +190,6 @@ public class HomeFragment extends LazyFragment {
                 String movieId = item.getItem().getPostid();
                 Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
                 intent.putExtra(MovieDetailActivity.POST_ID, movieId);
-                intent.putExtra(MovieDetailActivity.WEB_VIEW_URL, item.getItem().getRequest_url());
                 startActivity(intent);
             }
         });
@@ -180,9 +212,14 @@ public class HomeFragment extends LazyFragment {
                 String title;
                 if (dy < 0 && mMoviesAdapter.getItemList().get(position + 1).isHead()) {
                     Movie movie = mMoviesAdapter.getItemList().get(position - 1).getItem();
-                    title = mDateFormat.format(new Date(Long.parseLong(movie.getPublish_time()) * 1000)).split(",")[0];
-                    if (title.equals(mDateFormat.format(new Date(
-                        Long.parseLong(mMoviesAdapter.getItemList().get(0).getItem().getPublish_time()) * 1000)).split(",")[0])) {
+                    title = mDateFormat
+                        .format(new Date(Long.parseLong(movie.getPublish_time()) * 1000))
+                        .split(",")[0];
+                    if (title.equals(mDateFormat
+                        .format(new Date(Long.parseLong(
+                            mMoviesAdapter.getItemList().get(0).getItem()
+                                .getPublish_time()) * 1000))
+                        .split(",")[0])) {
                         title = "Latest";
                     }
                     RxBus.getDefault().post(MainActivity.EVENT_TITLE_CHANGE, title);
@@ -204,7 +241,9 @@ public class HomeFragment extends LazyFragment {
     }
 
     private void fetchMovies() {
-        Subscription getLatestMovies = ServiceGenerator.getVMovieService().getMoviesByTab(mPage, 20, "latest")
+        Subscription getLatestMovies = ServiceGenerator
+            .getVMovieService()
+            .getMoviesByTab(mPage, 20, "latest")
             .map(new ExtractDataFunc<List<Movie>>())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -215,11 +254,18 @@ public class HomeFragment extends LazyFragment {
                         List<SectionedItem<Movie>> sectionedItems = new ArrayList<>();
                         String lastTitle = "";
                         if (mMoviesAdapter.getItemCountIgnoreHF() > 0) {
-                            Movie lastMovie = mMoviesAdapter.getItemList().get(mMoviesAdapter.getItemCountIgnoreHF() - 1).getItem();
-                            lastTitle = mDateFormat.format(new Date(Long.parseLong(lastMovie.getPublish_time()) * 1000)).split(",")[0];
+                            Movie lastMovie = mMoviesAdapter.getItemList()
+                                .get(mMoviesAdapter.getItemCountIgnoreHF() - 1).getItem();
+                            lastTitle = mDateFormat
+                                .format(new Date(Long.parseLong(
+                                    lastMovie.getPublish_time()) * 1000))
+                                .split(",")[0];
                         }
                         for (int i = 0; i < movies.size(); i++) {
-                            String title = mDateFormat.format(new Date(Long.parseLong(movies.get(i).getPublish_time()) * 1000)).split(",")[0];
+                            String title = mDateFormat
+                                .format(new Date(Long.parseLong(
+                                    movies.get(i).getPublish_time()) * 1000))
+                                .split(",")[0];
                             if (i == 0 && mMoviesAdapter.getItemCountIgnoreHF() == 0) {
                                 lastTitle = title;
                             }
@@ -247,8 +293,10 @@ public class HomeFragment extends LazyFragment {
                                 .view(getActivity().findViewById(android.R.id.content))
                                 .message("网络错误，加载失败")
                                 .duration(Snackbar.LENGTH_INDEFINITE)
-                                .backgroundColor(ContextCompat.getColor(getActivity(), R.color.material_blue_grey))
-                                .messageColor(ContextCompat.getColor(getActivity(), R.color.material_amber_dark))
+                                .backgroundColor(ContextCompat.getColor(getActivity(),
+                                    R.color.material_blue_grey))
+                                .messageColor(ContextCompat.getColor(getActivity(),
+                                    R.color.material_amber_dark))
                                 .actionText("重试")
                                 .action(new View.OnClickListener() {
                                     @Override
