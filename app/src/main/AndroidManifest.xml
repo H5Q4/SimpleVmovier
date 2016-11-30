@@ -47,6 +47,8 @@
         </activity>
         <activity android:name=".activities.WebViewActivity">
         </activity>
+        <activity android:name=".activities.AlbumDetailActivity">
+        </activity>
     </application>
 
 </manifest>

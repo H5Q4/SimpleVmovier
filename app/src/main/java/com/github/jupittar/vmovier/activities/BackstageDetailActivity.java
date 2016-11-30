@@ -32,14 +32,13 @@ public class BackstageDetailActivity extends BaseActivity {
 
     public static final String POST_ID = "post_id";
     public static final String DETAIL_URL = "detail_url";
-
+    public static List<MovieDetail.Content.Video> mVideos;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.web_view)
     WebView mWebView;
     @BindView(R.id.title_tv)
     TextView mTitleTextView;
-    public static List<MovieDetail.Content.Video> mVideos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +96,6 @@ public class BackstageDetailActivity extends BaseActivity {
         WebSettings webSettings = mWebView.getSettings();
 
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setAllowUniversalAccessFromFileURLs(true);
         mWebView.setWebViewClient(new WebViewClient() {
 
             @Override
