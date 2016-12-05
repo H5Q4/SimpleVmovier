@@ -99,8 +99,8 @@ public class MainActivity extends BaseActivity
                 return titleView;
             }
         });
-        mTitleSwitcher.setInAnimation(this, android.R.anim.slide_in_left);
-        mTitleSwitcher.setOutAnimation(this, android.R.anim.slide_out_right);
+        mTitleSwitcher.setInAnimation(this, R.anim.slide_in_bottom);
+        mTitleSwitcher.setOutAnimation(this, R.anim.slide_out_top);
         mTitleSwitcher.setText(getString(R.string.common_latest));
         Subscription subscription = RxBus.getDefault().toObservable(EVENT_TITLE_CHANGE, String.class)
             .subscribe(new BusSubscriber<String>() {

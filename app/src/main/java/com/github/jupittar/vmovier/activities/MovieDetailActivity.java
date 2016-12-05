@@ -29,6 +29,7 @@ import com.github.jupittar.vmovier.Utils;
 import com.github.jupittar.vmovier.models.MovieDetail;
 import com.github.jupittar.vmovier.network.ExtractDataFunc;
 import com.github.jupittar.vmovier.network.ServiceGenerator;
+import com.github.jupittar.vmovier.widgets.RenderAwareWebView;
 import com.orhanobut.logger.Logger;
 
 import butterknife.BindView;
@@ -38,134 +39,150 @@ import rx.schedulers.Schedulers;
 
 public class MovieDetailActivity extends BaseActivity {
 
-    public static final String POST_ID = "post_id";
+  public static final String POST_ID = "post_id";
 
-    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout mCollapsingToolbarLayout;
-    @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.web_view) WebView mWebView;
-    @BindView(R.id.video_thumbnail_iv) AspectRatioImageView mThumbnailImageView;
-    @BindView(R.id.play_fab) FloatingActionButton mPlayButton;
-    @BindView(R.id.loading_iv) LoadingImageView mLoadingImageView;
-    @BindView(R.id.reload_btn) Button mReloadButton;
-    @BindView(R.id.error_ll) LinearLayout mErrorLayout;
-    @BindView(R.id.main_content) View mContentMain;
+  @BindView(R.id.collapsing_toolbar)
+  CollapsingToolbarLayout mCollapsingToolbarLayout;
+  @BindView(R.id.toolbar)
+  Toolbar mToolbar;
+  @BindView(R.id.web_view)
+  RenderAwareWebView mWebView;
+  @BindView(R.id.video_thumbnail_iv)
+  AspectRatioImageView mThumbnailImageView;
+  @BindView(R.id.play_fab)
+  FloatingActionButton mPlayButton;
+  @BindView(R.id.loading_iv)
+  LoadingImageView mLoadingImageView;
+  @BindView(R.id.reload_btn)
+  Button mReloadButton;
+  @BindView(R.id.error_ll)
+  LinearLayout mErrorLayout;
+  @BindView(R.id.main_content)
+  View mContentMain;
 
-    private String mVideoUrl;
-    private String mPostId;
+  private String mVideoUrl;
+  private String mPostId;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie_detail);
-        mPostId = getIntent().getStringExtra(POST_ID);
-        setUpToolbar();
-        setUpWebView();
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_movie_detail);
+    mPostId = getIntent().getStringExtra(POST_ID);
+    setUpToolbar();
+    setUpWebView();
+    fetchMovieDetail();
+    mPlayButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        if (mVideoUrl == null) {
+          return;
+        }
+        Intent intent = new Intent(MovieDetailActivity.this, VideoPlayActivity.class);
+        intent.putExtra(VideoPlayActivity.VIDEO_URL, mVideoUrl);
+        startActivity(intent);
+      }
+    });
+    mReloadButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        mErrorLayout.setVisibility(View.GONE);
+        mContentMain.setVisibility(View.VISIBLE);
+        mLoadingImageView.setVisibility(View.VISIBLE);
         fetchMovieDetail();
-        mPlayButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mVideoUrl == null) {
-                    return;
-                }
-                Intent intent = new Intent(MovieDetailActivity.this, VideoPlayActivity.class);
-                intent.putExtra(VideoPlayActivity.VIDEO_URL, mVideoUrl);
-                startActivity(intent);
-            }
+      }
+    });
+  }
+
+  private void setUpToolbar() {
+    setSupportActionBar(mToolbar);
+    ActionBar actionBar = getSupportActionBar();
+    if (actionBar != null) {
+      actionBar.setDisplayShowTitleEnabled(false);
+      actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+    mThumbnailImageView.setAspectRatio(3.0D / 4.0D);
+    mCollapsingToolbarLayout.setCollapsedTitleTypeface(Typeface.createFromAsset(getAssets(),
+        "fonts/Lobster-Regular.ttf"));
+    mCollapsingToolbarLayout.setTitle(getString(R.string.app_name));
+    mCollapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this,
+        android.R.color.transparent));
+    mCollapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(this,
+        android.R.color.white));
+  }
+
+  private void fetchMovieDetail() {
+    ServiceGenerator.getVMovieService().getMovieDetail(mPostId)
+        .map(new ExtractDataFunc<MovieDetail>())
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Action1<MovieDetail>() {
+          @Override
+          public void call(MovieDetail movieDetail) {
+            Glide.with(MovieDetailActivity.this)
+                .load(movieDetail.getImage())
+                .centerCrop()
+                .into(mThumbnailImageView);
+            mWebView.loadUrl(String.format(
+                "http://app.vmoiver.com/%s?qingapp=app_new",
+                mPostId));
+            mCollapsingToolbarLayout.setTitle(movieDetail.getTitle());
+            mVideoUrl = movieDetail.getContent().getVideo().get(0).getQiniu_url();
+            mPlayButton.setVisibility(View.VISIBLE);
+          }
+        }, new Action1<Throwable>() {
+          @Override
+          public void call(Throwable throwable) {
+            mContentMain.setVisibility(View.GONE);
+            mLoadingImageView.setVisibility(View.GONE);
+            mErrorLayout.setVisibility(View.VISIBLE);
+            Logger.e(throwable, "getMovieDetail");
+          }
         });
-        mReloadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mErrorLayout.setVisibility(View.GONE);
-                mContentMain.setVisibility(View.VISIBLE);
-                mLoadingImageView.setVisibility(View.VISIBLE);
-                fetchMovieDetail();
-            }
-        });
-    }
+  }
 
-    private void setUpToolbar() {
-        setSupportActionBar(mToolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayShowTitleEnabled(false);
-            actionBar.setDisplayHomeAsUpEnabled(true);
+  @SuppressLint("SetJavaScriptEnabled")
+  private void setUpWebView() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+      WebView.setWebContentsDebuggingEnabled(true);
+    }
+    WebSettings webSettings = mWebView.getSettings();
+
+    webSettings.setJavaScriptEnabled(true);
+    mWebView.setWebViewClient(new WebViewClient() {
+
+      @Override
+      public void onPageFinished(WebView view, String url) {
+        super.onPageFinished(view, url);
+        Utils.loadLocalJs(view, "js/script.js");
+      }
+    });
+    mWebView.setOnBeginDisplayListener(new RenderAwareWebView.BeginDisplayListener() {
+      @Override
+      public void onBeginDisplay() {
+        if (mLoadingImageView != null) {
+          mLoadingImageView.setVisibility(View.GONE);
         }
-        mThumbnailImageView.setAspectRatio(3.0D/4.0D);
-        mCollapsingToolbarLayout.setCollapsedTitleTypeface(Typeface.createFromAsset(getAssets(),
-            "fonts/Lobster-Regular.ttf"));
-        mCollapsingToolbarLayout.setTitle(getString(R.string.app_name));
-        mCollapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this,
-            android.R.color.transparent));
-        mCollapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(this,
-            android.R.color.white));
+      }
+    });
+    mWebView.addJavascriptInterface(new AndroidCalledByJs(this), "android");
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.movie_detail, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    int id = item.getItemId();
+
+    if (id == android.R.id.home) {
+      finish();
+      return true;
     }
 
-    private void fetchMovieDetail() {
-        ServiceGenerator.getVMovieService().getMovieDetail(mPostId)
-            .map(new ExtractDataFunc<MovieDetail>())
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Action1<MovieDetail>() {
-                @Override
-                public void call(MovieDetail movieDetail) {
-                    Glide.with(MovieDetailActivity.this)
-                        .load(movieDetail.getImage())
-                        .centerCrop()
-                        .into(mThumbnailImageView);
-                    mWebView.loadUrl(String.format(
-                        "http://app.vmoiver.com/%s?qingapp=app_new",
-                        mPostId));
-                    mCollapsingToolbarLayout.setTitle(movieDetail.getTitle());
-                    mVideoUrl = movieDetail.getContent().getVideo().get(0).getQiniu_url();
-                    mPlayButton.setVisibility(View.VISIBLE);
-                }
-            }, new Action1<Throwable>() {
-                @Override
-                public void call(Throwable throwable) {
-                    mContentMain.setVisibility(View.GONE);
-                    mLoadingImageView.setVisibility(View.GONE);
-                    mErrorLayout.setVisibility(View.VISIBLE);
-                    Logger.e(throwable, "getMovieDetail");
-                }
-            });
-    }
-
-    @SuppressLint("SetJavaScriptEnabled")
-    private void setUpWebView() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            WebView.setWebContentsDebuggingEnabled(true);
-        }
-        WebSettings webSettings = mWebView.getSettings();
-
-        webSettings.setJavaScriptEnabled(true);
-        mWebView.setWebViewClient(new WebViewClient() {
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                mLoadingImageView.setVisibility(View.GONE);
-                Utils.loadLocalJs(view, "js/script.js");
-            }
-        });
-        mWebView.addJavascriptInterface(new AndroidCalledByJs(this), "android");
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.movie_detail, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == android.R.id.home) {
-            finish();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+    return super.onOptionsItemSelected(item);
+  }
 
 }
