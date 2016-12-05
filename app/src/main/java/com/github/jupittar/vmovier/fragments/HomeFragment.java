@@ -4,6 +4,7 @@ package com.github.jupittar.vmovier.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -190,7 +191,10 @@ public class HomeFragment extends LazyFragment {
                 String movieId = item.getItem().getPostid();
                 Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
                 intent.putExtra(MovieDetailActivity.POST_ID, movieId);
-                startActivity(intent);
+                ActivityOptionsCompat options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation(getActivity(),
+                        view.findViewById(R.id.item_movie_cover), "share_cover");
+                startActivity(intent, options.toBundle());
             }
         });
         mMovieRecyclerView.setAdapter(mMoviesAdapter);

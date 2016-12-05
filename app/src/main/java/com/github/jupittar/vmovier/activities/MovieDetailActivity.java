@@ -120,6 +120,7 @@ public class MovieDetailActivity extends BaseActivity {
           public void call(MovieDetail movieDetail) {
             Glide.with(MovieDetailActivity.this)
                 .load(movieDetail.getImage())
+                .dontAnimate()
                 .centerCrop()
                 .into(mThumbnailImageView);
             mWebView.loadUrl(String.format(
@@ -178,7 +179,7 @@ public class MovieDetailActivity extends BaseActivity {
     int id = item.getItemId();
 
     if (id == android.R.id.home) {
-      finish();
+      supportFinishAfterTransition();
       return true;
     }
 

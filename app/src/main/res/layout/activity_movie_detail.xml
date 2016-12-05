@@ -15,6 +15,7 @@
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@android:color/white"
             android:elevation="0dp"
             android:fitsSystemWindows="true"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -39,7 +40,8 @@
                     <com.github.jupittar.commlib.custom.AspectRatioImageView
                         android:id="@+id/video_thumbnail_iv"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="match_parent"
+                        android:transitionName="share_cover"/>
 
                 </FrameLayout>
 
