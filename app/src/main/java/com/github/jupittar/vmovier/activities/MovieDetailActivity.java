@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +25,7 @@ import com.bumptech.glide.Glide;
 import com.github.jupittar.commlib.base.BaseActivity;
 import com.github.jupittar.commlib.custom.AspectRatioImageView;
 import com.github.jupittar.commlib.custom.LoadingImageView;
+import com.github.jupittar.commlib.utilities.GsonUtils;
 import com.github.jupittar.vmovier.AndroidCalledByJs;
 import com.github.jupittar.vmovier.R;
 import com.github.jupittar.vmovier.Utils;
@@ -30,7 +33,14 @@ import com.github.jupittar.vmovier.models.MovieDetail;
 import com.github.jupittar.vmovier.network.ExtractDataFunc;
 import com.github.jupittar.vmovier.network.ServiceGenerator;
 import com.github.jupittar.vmovier.widgets.RenderAwareWebView;
+import com.github.lzyzsd.jsbridge.BridgeHandler;
+import com.github.lzyzsd.jsbridge.BridgeWebView;
+import com.github.lzyzsd.jsbridge.BridgeWebViewClient;
+import com.github.lzyzsd.jsbridge.CallBackFunction;
+import com.google.gson.reflect.TypeToken;
 import com.orhanobut.logger.Logger;
+
+import java.util.Map;
 
 import butterknife.BindView;
 import rx.android.schedulers.AndroidSchedulers;
@@ -40,6 +50,8 @@ import rx.schedulers.Schedulers;
 public class MovieDetailActivity extends BaseActivity {
 
   public static final String POST_ID = "post_id";
+  private static final int TYPE_CLICK_PLAY = 0;
+  private static final int TYPE_CLICK_DOWNLOAD = 1;
 
   @BindView(R.id.collapsing_toolbar)
   CollapsingToolbarLayout mCollapsingToolbarLayout;
@@ -62,6 +74,7 @@ public class MovieDetailActivity extends BaseActivity {
 
   private String mVideoUrl;
   private String mPostId;
+  private MovieDetail mMovieDetail;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -74,12 +87,7 @@ public class MovieDetailActivity extends BaseActivity {
     mPlayButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        if (mVideoUrl == null) {
-          return;
-        }
-        Intent intent = new Intent(MovieDetailActivity.this, VideoPlayActivity.class);
-        intent.putExtra(VideoPlayActivity.VIDEO_URL, mVideoUrl);
-        startActivity(intent);
+        startPlaying(mVideoUrl);
       }
     });
     mReloadButton.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +99,15 @@ public class MovieDetailActivity extends BaseActivity {
         fetchMovieDetail();
       }
     });
+  }
+
+  private void startPlaying(String videoUrl) {
+    if (videoUrl == null) {
+      return;
+    }
+    Intent intent = new Intent(MovieDetailActivity.this, VideoPlayActivity.class);
+    intent.putExtra(VideoPlayActivity.VIDEO_URL, videoUrl);
+    startActivity(intent);
   }
 
   private void setUpToolbar() {
@@ -118,9 +135,9 @@ public class MovieDetailActivity extends BaseActivity {
         .subscribe(new Action1<MovieDetail>() {
           @Override
           public void call(MovieDetail movieDetail) {
+            mMovieDetail = movieDetail;
             Glide.with(MovieDetailActivity.this)
                 .load(movieDetail.getImage())
-                .dontAnimate()
                 .centerCrop()
                 .into(mThumbnailImageView);
             mWebView.loadUrl(String.format(
@@ -143,18 +160,26 @@ public class MovieDetailActivity extends BaseActivity {
 
   @SuppressLint("SetJavaScriptEnabled")
   private void setUpWebView() {
+    mWebView.setVisibility(View.INVISIBLE);
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
       WebView.setWebContentsDebuggingEnabled(true);
     }
     WebSettings webSettings = mWebView.getSettings();
 
     webSettings.setJavaScriptEnabled(true);
-    mWebView.setWebViewClient(new WebViewClient() {
+    webSettings.setAllowUniversalAccessFromFileURLs(true);
+    mWebView.setWebViewClient(new BridgeWebViewClient(mWebView) {
 
       @Override
       public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
         Utils.loadLocalJs(view, "js/script.js");
+        new Handler().postDelayed(new Runnable() {
+          @Override
+          public void run() {
+            mWebView.setVisibility(View.VISIBLE);
+          }
+        }, 200);
       }
     });
     mWebView.setOnBeginDisplayListener(new RenderAwareWebView.BeginDisplayListener() {
@@ -165,7 +190,77 @@ public class MovieDetailActivity extends BaseActivity {
         }
       }
     });
-    mWebView.addJavascriptInterface(new AndroidCalledByJs(this), "android");
+    mWebView.registerHandler("handlerVideo", new BridgeHandler() {
+      @Override
+      public void handler(String data, CallBackFunction function) {
+        if (TextUtils.isEmpty(data)) {
+          return;
+        }
+        Map<String, String> dataMap = GsonUtils.toMap(data,
+            new TypeToken<Map<String, String>>() {
+            }.getType());
+        String type = dataMap.get("type");
+        String videoIdx = dataMap.get("videoIdx");
+        if (Integer.valueOf(type) == TYPE_CLICK_PLAY) {
+          if (Integer.valueOf(videoIdx) < mMovieDetail.getContent().getVideo().size()) {
+            String videoUrl = mMovieDetail.getContent().getVideo().get(Integer.valueOf(videoIdx))
+                .getQiniu_url();
+            startPlaying(videoUrl);
+          }
+        } else if (Integer.valueOf(videoIdx) == TYPE_CLICK_DOWNLOAD) {
+          //TODO download this video
+        }
+      }
+    });
+    mWebView.registerHandler("handlerNewView", new BridgeHandler() {
+      @Override
+      public void handler(String data, CallBackFunction function) {
+        if (TextUtils.isEmpty(data)) {
+          return;
+        }
+        Map<String, String> dataMap = GsonUtils.toMap(data,
+            new TypeToken<Map<String, String>>() {
+            }.getType());
+        String type = dataMap.get("type");
+        String id = dataMap.get("id");
+        Bundle bundle = new Bundle();
+        Intent intent = new Intent();
+        switch (type) {
+          case "0":
+            bundle.putString(POST_ID, id);
+            intent.setClass(MovieDetailActivity.this, MovieDetailActivity.class);
+            break;
+          case "1":
+            bundle.putString(WebViewActivity.KEY_URL,
+                String.format("http://www.xinpianchang.com/u%s?qingapp=app_new", id));
+            intent.setClass(MovieDetailActivity.this, WebViewActivity.class);
+            break;
+          case "2":
+            bundle.putString(SeriesDetailActivity.SERIES_ID, id);
+            intent.setClass(MovieDetailActivity.this, SeriesDetailActivity.class);
+            break;
+        }
+        intent.putExtras(bundle);
+        startActivity(intent);
+      }
+    });
+    mWebView.registerHandler("handlerNewViewByUrl", new BridgeHandler() {
+      @Override
+      public void handler(String data, CallBackFunction function) {
+        if (TextUtils.isEmpty(data)) {
+          return;
+        }
+        Map<String, String> dataMap = GsonUtils.toMap(data,
+            new TypeToken<Map<String, String>>() {
+            }.getType());
+        String url = dataMap.get("url");
+        Bundle bundle = new Bundle();
+        bundle.putString(WebViewActivity.KEY_URL, url);
+        Intent intent = new Intent(MovieDetailActivity.this, WebViewActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+      }
+    });
   }
 
   @Override

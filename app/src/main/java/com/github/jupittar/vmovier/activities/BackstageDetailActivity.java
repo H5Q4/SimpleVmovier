@@ -18,6 +18,7 @@ import com.github.jupittar.vmovier.Utils;
 import com.github.jupittar.vmovier.models.MovieDetail;
 import com.github.jupittar.vmovier.network.ExtractDataFunc;
 import com.github.jupittar.vmovier.network.ServiceGenerator;
+import com.github.jupittar.vmovier.widgets.RenderAwareWebView;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class BackstageDetailActivity extends BaseActivity {
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.web_view)
-    WebView mWebView;
+    RenderAwareWebView mWebView;
     @BindView(R.id.title_tv)
     TextView mTitleTextView;
 
@@ -85,7 +86,7 @@ public class BackstageDetailActivity extends BaseActivity {
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        mTitleTextView.setText("幕后文章");
+        mTitleTextView.setText("幕后揭秘");
     }
 
     @SuppressLint("SetJavaScriptEnabled")
