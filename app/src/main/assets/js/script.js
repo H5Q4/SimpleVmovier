@@ -22,17 +22,17 @@
     window.android.onClickRecommendMovie(id);
   });
 
-  const links = document.getElementsByTagName('a');
-  for (var i = 0; i < links.length; i++) {
-    const link = links.item(i);
-    disableLink(link);
-  }
-
-  // Disable the functionality of tag <a>.
-  function disableLink(link) {
-    link.style.color = '#000';
-    link.removeAttribute('href');
-    link.setAttribute('disabled', 'disabled');
-  }
+//  const links = document.getElementsByTagName('a');
+//  for (var i = 0; i < links.length; i++) {
+//    const link = links.item(i);
+//    disableLink(link);
+//  }
+//
+//  // Disable the functionality of tag <a>.
+//  function disableLink(link) {
+//    link.style.color = '#000';
+//    link.removeAttribute('href');
+//    link.setAttribute('disabled', 'disabled');
+//  }
 
 })();

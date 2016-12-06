@@ -4,14 +4,14 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:statusBarColor">@color/material_blue_grey_dark</item>
-        <item name="android:windowContentTransitions">true</item>
+        <!--<item name="android:windowContentTransitions">true</item>-->
         <!--<item name="android:windowEnterTransition">@android:transition/explode</item>-->
         <!--<item name="android:windowExitTransition">@android:transition/explode</item>-->
         <!-- specify shared element transitions -->
-        <item name="android:windowSharedElementEnterTransition">
-            @transition/change_img_transform</item>
-        <item name="android:windowSharedElementExitTransition">
-            @transition/change_img_transform</item>
+        <!--<item name="android:windowSharedElementEnterTransition">-->
+            <!--@transition/change_img_transform</item>-->
+        <!--<item name="android:windowSharedElementExitTransition">-->
+            <!--@transition/change_img_transform</item>-->
     </style>
 
     <style name="AppTheme.DrawsSystemBarBg" parent="AppTheme.NoActionBar">

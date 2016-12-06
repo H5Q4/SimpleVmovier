@@ -179,7 +179,7 @@ public class MovieDetailActivity extends BaseActivity {
     int id = item.getItemId();
 
     if (id == android.R.id.home) {
-      supportFinishAfterTransition();
+      finish();
       return true;
     }
 

@@ -191,10 +191,11 @@ public class HomeFragment extends LazyFragment {
                 String movieId = item.getItem().getPostid();
                 Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
                 intent.putExtra(MovieDetailActivity.POST_ID, movieId);
-                ActivityOptionsCompat options = ActivityOptionsCompat.
-                    makeSceneTransitionAnimation(getActivity(),
-                        view.findViewById(R.id.item_movie_cover), "share_cover");
-                startActivity(intent, options.toBundle());
+//                ActivityOptionsCompat options = ActivityOptionsCompat.
+//                    makeSceneTransitionAnimation(getActivity(),
+//                        view.findViewById(R.id.item_movie_cover), "share_cover");
+//                startActivity(intent, options.toBundle());
+                startActivity(intent);
             }
         });
         mMovieRecyclerView.setAdapter(mMoviesAdapter);
