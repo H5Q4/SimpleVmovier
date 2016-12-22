@@ -5,14 +5,14 @@
                 android:layout_height="match_parent"
                 tools:context=".fragments.HomeFragment">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/title_toolbar"/>
+  <include
+      android:id="@+id/toolbar"
+      layout="@layout/title_toolbar"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_below="@id/toolbar"
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+  <android.support.v7.widget.RecyclerView
+      android:id="@+id/recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_below="@id/toolbar"/>
 
 </RelativeLayout>

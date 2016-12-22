@@ -1,0 +1,51 @@
+ext {
+
+  //libraries versions
+  libVersions = [
+      androidSupport: '23.4.0',
+      gson          : '2.6.1',
+      rxjava        : '1.1.4',
+      rxandroid     : '1.1.0',
+      butterknife   : '8.4.0',
+      glide         : '3.7.0',
+      logger        : '1.13',
+      retrofit2     : '2.0.2',
+      dagger        : '2.8',
+      leakcanary    : '1.4-beta2',
+  ]
+
+  //libraries dependencies
+  libGoogle = [
+      //android support
+      design        : "com.android.support:design:${libVersions.androidSupport}",
+      recyclerView  : "com.android.support:recyclerview-v7:${libVersions.androidSupport}",
+      cardView      : "com.android.support:cardview-v7:${libVersions.androidSupport}",
+      appCompat     : "com.android.support:appcompat-v7:${libVersions.androidSupport}",
+
+      gson          : "com.google.code.gson:gson:${libVersions.gson}",
+      dagger        : "com.google.dagger:dagger:${libVersions.dagger}",
+      daggerCompiler: "com.google.dagger:dagger-compiler:${libVersions.dagger}",
+  ]
+  libReactiveX = [
+      rxjava   : "io.reactivex:rxjava:${libVersions.rxjava}",
+      rxandroid: "io.reactivex:rxandroid:${libVersions.rxandroid}",
+  ]
+  libJakewharton = [
+      butterknife        : "com.jakewharton:butterknife:${libVersions.butterknife}",
+      butterknifeCompiler: "com.jakewharton:butterknife-compiler:${libVersions.butterknife}",
+  ]
+  libSquareup = [
+      retrofit2              : "com.squareup.retrofit2:retrofit:${libVersions.retrofit2}",
+      gsonConverter4Retrofit2: "com.squareup.retrofit2:converter-gson:${libVersions.retrofit2}",
+      rxjavaAdapter4Retrofit2: "com.squareup.retrofit2:adapter-rxjava:${libVersions.retrofit2}",
+
+      leakcanary             : "com.squareup.leakcanary:leakcanary-android:${libVersions.leakcanary}",
+      leakcanaryNoOp         : "com.squareup.leakcanary:leakcanary-android-no-op:${libVersions.leakcanary}",
+  ]
+  libBumptech = [
+      glide: "com.github.bumptech.glide:glide:${libVersions.glide}",
+  ]
+  libOrhanobut = [
+      logger: "com.orhanobut:logger:${libVersions.logger}",
+  ]
+}

@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:EMVideoView="http://schemas.android.com/apk/res-auto"
-                android:fitsSystemWindows="true"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+             xmlns:EMVideoView="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:fitsSystemWindows="true">
 
-    <com.devbrackets.android.exomedia.EMVideoView
-        android:id="@+id/em_video_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        EMVideoView:defaultControlsEnabled="true"/>
+  <com.devbrackets.android.exomedia.EMVideoView
+      android:id="@+id/em_video_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      EMVideoView:defaultControlsEnabled="true"/>
 
-    <android.support.v7.widget.Toolbar
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:minHeight="?attr/actionBarSize"
-        app:theme="@style/AppTheme.AppBarOverlay"
-        app:popupTheme="@style/AppTheme.PopupOverlay"/>
+  <android.support.v7.widget.Toolbar
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:id="@+id/toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@android:color/transparent"
+      android:minHeight="?attr/actionBarSize"
+      app:popupTheme="@style/AppTheme.PopupOverlay"
+      app:theme="@style/AppTheme.AppBarOverlay"/>
 
 </FrameLayout>

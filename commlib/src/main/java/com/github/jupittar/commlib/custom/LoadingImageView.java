@@ -23,227 +23,226 @@ import com.github.jupittar.commlib.R;
 
 /**
  * Created by chiemy on 15/8/19.
- *
  */
 
 public class LoadingImageView extends ImageView {
 
-    // region Member Variables
-    private Paint imagePaint;
-    private BitmapShader shader;
-    private Paint paint;
-    private int imageHeight, imageWidth;
-    private int maskColor = Color.TRANSPARENT;
-    private ClipDrawable clipDrawable;
-    private Drawable maskDrawable;
-    private ObjectAnimator animator;
-    private int gravity = Gravity.LEFT;
-    private int orientaion = ClipDrawable.HORIZONTAL;
-    private float scaleX,scaleY;
-    private boolean autoStart = true;
-    private long animDuration = 800;
-    // endregion
+  // region Member Variables
+  private Paint imagePaint;
+  private BitmapShader shader;
+  private Paint paint;
+  private int imageHeight, imageWidth;
+  private int maskColor = Color.TRANSPARENT;
+  private ClipDrawable clipDrawable;
+  private Drawable maskDrawable;
+  private ObjectAnimator animator;
+  private int gravity = Gravity.LEFT;
+  private int orientaion = ClipDrawable.HORIZONTAL;
+  private float scaleX, scaleY;
+  private boolean autoStart = true;
+  private long animDuration = 800;
+  // endregion
 
-    // region Constructors
-    public LoadingImageView(Context context) {
-        this(context, null);
+  // region Constructors
+  public LoadingImageView(Context context) {
+    this(context, null);
+  }
+
+  public LoadingImageView(Context context, AttributeSet attrs) {
+    this(context, attrs, 0);
+  }
+
+  public LoadingImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init();
+    initAttrs(context, attrs);
+  }
+  // endregion
+
+  @Override
+  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    float[] f = new float[9];
+    getImageMatrix().getValues(f);
+
+    scaleX = f[Matrix.MSCALE_X];
+    scaleY = f[Matrix.MSCALE_Y];
+  }
+
+  @Override
+  protected void onDraw(Canvas canvas) {
+    super.onDraw(canvas);
+    //canvas.drawRect(0, maskHeight, getWidth(), getHeight(), paint);
+    canvas.save();
+    canvas.scale(scaleX, scaleY);
+    clipDrawable.setBounds(getDrawable().getBounds());
+    clipDrawable.draw(canvas);
+    canvas.restore();
+  }
+
+  @Override
+  protected void onDetachedFromWindow() {
+    super.onDetachedFromWindow();
+    stopAnim();
+  }
+
+  @Override
+  public void setImageDrawable(Drawable drawable) {
+    super.setImageDrawable(drawable);
+    if (maskColor != Color.TRANSPARENT) {
+      init();
+      initMaskBitmap(maskColor);
+      initAnim();
     }
+  }
 
-    public LoadingImageView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+  // region Helper Methods
+  private void initAttrs(Context context, AttributeSet attrs) {
+    if (attrs == null) {
+      return;
     }
+    TypedArray t = context.obtainStyledAttributes(attrs, R.styleable.LoadingImageView);
+    maskColor = t.getColor(R.styleable.LoadingImageView_mask_color, maskColor);
+    autoStart = t.getBoolean(R.styleable.LoadingImageView_anim_auto_start, autoStart);
+    setMaskColor(maskColor);
+    t.recycle();
+  }
 
-    public LoadingImageView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
-        initAttrs(context, attrs);
+  private void init() {
+    if (paint == null) {
+      imagePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+      imagePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP));
+      paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     }
-    // endregion
+  }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        float[] f = new float[9];
-        getImageMatrix().getValues(f);
+  private Bitmap combineImages(Bitmap bgd, Bitmap fg) {
+    Bitmap bmp = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.ARGB_8888);
+    Canvas canvas = new Canvas(bmp);
+    canvas.drawBitmap(bgd, 0, 0, null);
+    canvas.drawBitmap(fg, 0, 0, imagePaint);
+    return bmp;
+  }
 
-        scaleX = f[Matrix.MSCALE_X];
-        scaleY = f[Matrix.MSCALE_Y];
+  private void initMaskBitmap(int maskColor) {
+    Drawable drawable = getDrawable();
+    if (drawable == null) {
+      return;
     }
+    Bitmap bgd = ((BitmapDrawable) drawable).getBitmap();
+    imageWidth = drawable.getIntrinsicWidth();
+    imageHeight = drawable.getIntrinsicHeight();
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        //canvas.drawRect(0, maskHeight, getWidth(), getHeight(), paint);
-        canvas.save();
-        canvas.scale(scaleX, scaleY);
-        clipDrawable.setBounds(getDrawable().getBounds());
-        clipDrawable.draw(canvas);
-        canvas.restore();
-    }
+    Bitmap fg = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.ARGB_8888);
+    Canvas fgCanvas = new Canvas(fg);
+    fgCanvas.drawColor(maskColor);
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        stopAnim();
-    }
+    Bitmap bitmap = combineImages(bgd, fg);
+    maskDrawable = new BitmapDrawable(bitmap);
+    clipDrawable = new ClipDrawable(maskDrawable, gravity, orientaion);
 
-    @Override
-    public void setImageDrawable(Drawable drawable) {
-        super.setImageDrawable(drawable);
-        if(maskColor != Color.TRANSPARENT){
-            init();
-            initMaskBitmap(maskColor);
-            initAnim();
-        }
-    }
+    //shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+    //paint.setShader(shader);
+  }
 
-    // region Helper Methods
-    private void initAttrs(Context context, AttributeSet attrs){
-        if(attrs == null){
-            return;
-        }
-        TypedArray t = context.obtainStyledAttributes(attrs, R.styleable.LoadingImageView);
-        maskColor = t.getColor(R.styleable.LoadingImageView_mask_color, maskColor);
-        autoStart = t.getBoolean(R.styleable.LoadingImageView_anim_auto_start, autoStart);
-        setMaskColor(maskColor);
-        t.recycle();
-    }
+  private void setMaskHeight(int y) {
+    int maskHeight = y;
+    invalidate();
+  }
 
-    private void init() {
-        if (paint == null) {
-            imagePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            imagePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP));
-            paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        }
-    }
-
-    private Bitmap combineImages(Bitmap bgd, Bitmap fg) {
-        Bitmap bmp = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bmp);
-        canvas.drawBitmap(bgd, 0, 0, null);
-        canvas.drawBitmap(fg, 0, 0, imagePaint);
-        return bmp;
-    }
-
-    private void initMaskBitmap(int maskColor) {
-        Drawable drawable = getDrawable();
-        if(drawable == null){
-            return;
-        }
-        Bitmap bgd = ((BitmapDrawable) drawable).getBitmap();
-        imageWidth = drawable.getIntrinsicWidth();
-        imageHeight = drawable.getIntrinsicHeight();
-
-        Bitmap fg = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.ARGB_8888);
-        Canvas fgCanvas = new Canvas(fg);
-        fgCanvas.drawColor(maskColor);
-
-
-        Bitmap bitmap = combineImages(bgd, fg);
-        maskDrawable = new BitmapDrawable(bitmap);
-        clipDrawable = new ClipDrawable(maskDrawable, gravity, orientaion);
-
-        //shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-        //paint.setShader(shader);
-    }
-
-    private void setMaskHeight(int y) {
-        int maskHeight = y;
+  private void initAnim() {
+    stopAnim();
+    //animator = ObjectAnimator.ofInt(this, "maskHeight", 0, imageHeight);
+    animator = ObjectAnimator.ofInt(clipDrawable, "level", 0, 10000);
+    animator.setDuration(animDuration);
+    animator.setRepeatCount(ValueAnimator.INFINITE);
+    animator.setRepeatMode(ValueAnimator.RESTART);
+    animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+      @Override
+      public void onAnimationUpdate(ValueAnimator animation) {
         invalidate();
+      }
+    });
+    if (autoStart) {
+      animator.start();
     }
+  }
 
-    private void initAnim() {
-        stopAnim();
-        //animator = ObjectAnimator.ofInt(this, "maskHeight", 0, imageHeight);
-        animator = ObjectAnimator.ofInt(clipDrawable, "level", 0, 10000);
-        animator.setDuration(animDuration);
-        animator.setRepeatCount(ValueAnimator.INFINITE);
-        animator.setRepeatMode(ValueAnimator.RESTART);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                invalidate();
-            }
-        });
-        if(autoStart){
-            animator.start();
-        }
+  private void stopAnim() {
+    if (animator != null) {
+      animator.cancel();
     }
+  }
 
-    private void stopAnim(){
-        if(animator != null){
-            animator.cancel();
-        }
+  /**
+   * 设置动画时长
+   */
+  public void setMaskAnimDuration(long duration) {
+    animDuration = duration;
+    initAnim();
+  }
+
+  /**
+   * 开始播放动画
+   */
+  public void startMaskAnim() {
+    if (animator != null) {
+      animator.start();
     }
+  }
 
-    /**
-     * 设置动画时长
-     */
-    public void setMaskAnimDuration(long duration) {
-        animDuration = duration;
-        initAnim();
+  public void setMaskColor(int color) {
+    initMaskBitmap(color);
+    initAnim();
+  }
+
+  public int getMaskOrientation() {
+    int maskOrientation = MaskOrientation.LeftToRight;
+    return maskOrientation;
+  }
+
+  /**
+   * 设置方向
+   *
+   * @param orientation {@link MaskOrientation}
+   */
+  public void setMaskOrientation(int orientation) {
+    switch (orientation) {
+      case MaskOrientation.LeftToRight:
+        gravity = Gravity.LEFT;
+        orientaion = ClipDrawable.HORIZONTAL;
+        break;
+      case MaskOrientation.RightToLeft:
+        gravity = Gravity.RIGHT;
+        orientaion = ClipDrawable.HORIZONTAL;
+        break;
+      case MaskOrientation.TopToBottom:
+        gravity = Gravity.TOP;
+        orientaion = ClipDrawable.VERTICAL;
+        break;
+      case MaskOrientation.BottomToTop:
+      default:
+        gravity = Gravity.BOTTOM;
+        orientaion = ClipDrawable.VERTICAL;
+        break;
     }
-
-    /**
-     * 开始播放动画
-     */
-    public void startMaskAnim() {
-        if (animator != null) {
-            animator.start();
-        }
+    if (maskDrawable == null) {
+      return;
     }
+    clipDrawable = new ClipDrawable(maskDrawable, gravity, orientaion);
+    initAnim();
+  }
+  // endregion
 
-    public void setMaskColor(int color) {
-        initMaskBitmap(color);
-        initAnim();
-    }
+  // region Inner Classes
 
-    /**
-     * 设置方向
-     * @param orientation {@link MaskOrientation}
-     */
-    public void setMaskOrientation(int orientation){
-        switch (orientation){
-            case MaskOrientation.LeftToRight:
-                gravity = Gravity.LEFT;
-                orientaion = ClipDrawable.HORIZONTAL;
-                break;
-            case MaskOrientation.RightToLeft:
-                gravity = Gravity.RIGHT;
-                orientaion = ClipDrawable.HORIZONTAL;
-                break;
-            case MaskOrientation.TopToBottom:
-                gravity = Gravity.TOP;
-                orientaion = ClipDrawable.VERTICAL;
-                break;
-            case MaskOrientation.BottomToTop:
-            default:
-                gravity = Gravity.BOTTOM;
-                orientaion = ClipDrawable.VERTICAL;
-                break;
-        }
-        if(maskDrawable == null){
-            return;
-        }
-        clipDrawable = new ClipDrawable(maskDrawable, gravity, orientaion);
-        initAnim();
-    }
-
-    public int getMaskOrientation() {
-        int maskOrientation = MaskOrientation.LeftToRight;
-        return maskOrientation;
-    }
-    // endregion
-
-    // region Inner Classes
-
-    public static final class MaskOrientation{
-        public static final int LeftToRight = 1;
-        public static final int RightToLeft = 2;
-        public static final int TopToBottom = 3;
-        public static final int BottomToTop = 4;
-    }
-    // endregion
+  public static final class MaskOrientation {
+    public static final int LeftToRight = 1;
+    public static final int RightToLeft = 2;
+    public static final int TopToBottom = 3;
+    public static final int BottomToTop = 4;
+  }
+  // endregion
 
 }
 

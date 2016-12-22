@@ -11,24 +11,24 @@
               android:paddingTop="@dimen/spacing_large"
               android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:src="@mipmap/ic_launcher"/>
+  <ImageView
+      android:id="@+id/imageView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:paddingTop="@dimen/nav_header_vertical_spacing"
+      android:src="@mipmap/ic_launcher"/>
 
-    <com.github.jupittar.commlib.custom.LobsterTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="V Movier"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+  <com.github.jupittar.commlib.custom.LobsterTextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingTop="@dimen/nav_header_vertical_spacing"
+      android:text="V Movier"
+      android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
-    <com.github.jupittar.commlib.custom.LobsterTextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="\@vmovier.com"/>
+  <com.github.jupittar.commlib.custom.LobsterTextView
+      android:id="@+id/textView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="\@vmovier.com"/>
 
 </LinearLayout>

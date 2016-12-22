@@ -9,20 +9,20 @@ import java.util.List;
 
 public class ContentFragmentPageAdapter extends FragmentPagerAdapter {
 
-    private List<Fragment> mFragments;
+  private List<Fragment> mFragments;
 
-    public ContentFragmentPageAdapter(FragmentManager fm, @NonNull List<Fragment> fragments) {
-        super(fm);
-        this.mFragments = fragments;
-    }
+  public ContentFragmentPageAdapter(FragmentManager fm, @NonNull List<Fragment> fragments) {
+    super(fm);
+    this.mFragments = fragments;
+  }
 
-    @Override
-    public Fragment getItem(int position) {
-        return mFragments.get(position);
-    }
+  @Override
+  public Fragment getItem(int position) {
+    return mFragments.get(position);
+  }
 
-    @Override
-    public int getCount() {
-        return mFragments.size();
-    }
+  @Override
+  public int getCount() {
+    return mFragments.size();
+  }
 }

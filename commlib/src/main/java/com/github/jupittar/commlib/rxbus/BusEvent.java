@@ -2,28 +2,28 @@ package com.github.jupittar.commlib.rxbus;
 
 public class BusEvent {
 
-    private String tag;
-    private Object object;
+  private String tag;
+  private Object object;
 
-    public String getTag() {
-        return tag;
-    }
+  public BusEvent(String tag, Object object) {
 
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
+    this.tag = tag;
+    this.object = object;
+  }
 
-    public Object getObject() {
-        return object;
-    }
+  public String getTag() {
+    return tag;
+  }
 
-    public void setObject(Object object) {
-        this.object = object;
-    }
+  public void setTag(String tag) {
+    this.tag = tag;
+  }
 
-    public BusEvent(String tag, Object object) {
+  public Object getObject() {
+    return object;
+  }
 
-        this.tag = tag;
-        this.object = object;
-    }
+  public void setObject(Object object) {
+    this.object = object;
+  }
 }

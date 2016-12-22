@@ -5,44 +5,44 @@
     android:layout_height="wrap_content"
     >
 
-    <com.github.jupittar.commlib.custom.AspectRatioImageView
-        android:id="@+id/item_movie_cover"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:transitionName="share_cover"
-        />
+  <com.github.jupittar.commlib.custom.AspectRatioImageView
+      android:id="@+id/item_movie_cover"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:transitionName="share_cover"
+      />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/clickable_item_movie"/>
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@drawable/clickable_item_movie"/>
 
-    <RelativeLayout
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="bottom"
+      android:gravity="bottom"
+      android:paddingBottom="@dimen/spacing_large"
+      android:paddingLeft="@dimen/spacing_normal"
+      android:paddingRight="@dimen/spacing_normal"
+      android:paddingTop="@dimen/spacing_large">
+
+    <com.github.jupittar.commlib.custom.LobsterTextView
+        android:id="@+id/item_movie_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:gravity="bottom"
-        android:paddingBottom="@dimen/spacing_large"
-        android:paddingLeft="@dimen/spacing_normal"
-        android:paddingRight="@dimen/spacing_normal"
-        android:paddingTop="@dimen/spacing_large">
+        android:textColor="@android:color/white"
+        android:textSize="16sp"/>
 
-        <com.github.jupittar.commlib.custom.LobsterTextView
-            android:id="@+id/item_movie_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"/>
+    <com.github.jupittar.commlib.custom.LobsterTextView
+        android:id="@+id/cate_time_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_movie_title"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"/>
 
-        <com.github.jupittar.commlib.custom.LobsterTextView
-            android:id="@+id/cate_time_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/item_movie_title"
-            android:layout_marginTop="@dimen/spacing_normal"
-            android:textColor="@android:color/white"
-            android:textSize="12sp"/>
-
-    </RelativeLayout>
+  </RelativeLayout>
 
 </FrameLayout>

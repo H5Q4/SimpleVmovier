@@ -28,62 +28,63 @@ import rx.schedulers.Schedulers;
 
 public class MovieCategoryFragment extends LazyFragment {
 
-    @BindView(R.id.cate_grid_rv)
-    RecyclerView mCateRecyclerView;
+  @BindView(R.id.cate_grid_rv)
+  RecyclerView mCateRecyclerView;
 
-    private CategoryAdapter mCategoryAdapter;
+  private CategoryAdapter mCategoryAdapter;
 
-    public MovieCategoryFragment(){}
+  public MovieCategoryFragment() {
+  }
 
-    @Override
-    public void onFirstAppear() {
-        setUpCateRecyclerView();
-    }
+  @Override
+  public void onFirstAppear() {
+    setUpCateRecyclerView();
+  }
 
-    private void setUpCateRecyclerView() {
-        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
-        mCateRecyclerView.setLayoutManager(layoutManager);
-        mCateRecyclerView.setHasFixedSize(true);
-        mCategoryAdapter = new CategoryAdapter(getActivity(), R.layout.item_category);
-        mCateRecyclerView.setAdapter(mCategoryAdapter);
-        mCategoryAdapter.setOnItemClickListener(new CommonViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Category category = mCategoryAdapter.getDataItem(position);
-                Intent intent = new Intent(getActivity(), CategoryMoviesActivity.class);
-                intent.putExtra(CategoryMoviesActivity.CATEGORY, category);
-                startActivity(intent);
+  private void setUpCateRecyclerView() {
+    GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
+    mCateRecyclerView.setLayoutManager(layoutManager);
+    mCateRecyclerView.setHasFixedSize(true);
+    mCategoryAdapter = new CategoryAdapter(getActivity(), R.layout.item_category);
+    mCateRecyclerView.setAdapter(mCategoryAdapter);
+    mCategoryAdapter.setOnItemClickListener(new CommonViewAdapter.OnItemClickListener() {
+      @Override
+      public void onItemClick(View view, int position) {
+        Category category = mCategoryAdapter.getDataItem(position);
+        Intent intent = new Intent(getActivity(), CategoryMoviesActivity.class);
+        intent.putExtra(CategoryMoviesActivity.CATEGORY, category);
+        startActivity(intent);
+      }
+    });
+    fetchCategories();
+  }
+
+  private void fetchCategories() {
+    ServiceGenerator
+        .getVMovieService()
+        .getCateList()
+        .map(new ExtractDataFunc<List<Category>>())
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Action1<List<Category>>() {
+          @Override
+          public void call(List<Category> categories) {
+            if (categories != null) {
+              mCategoryAdapter.addAll(categories);
             }
+          }
+        }, new Action1<Throwable>() {
+          @Override
+          public void call(Throwable throwable) {
+            Logger.e(throwable, "getCateList");
+          }
         });
-        fetchCategories();
-    }
+  }
 
-    private void fetchCategories() {
-        ServiceGenerator
-            .getVMovieService()
-            .getCateList()
-            .map(new ExtractDataFunc<List<Category>>())
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Action1<List<Category>>() {
-                @Override
-                public void call(List<Category> categories) {
-                    if (categories != null){
-                        mCategoryAdapter.addAll(categories);
-                    }
-                }
-            }, new Action1<Throwable>() {
-                @Override
-                public void call(Throwable throwable) {
-                    Logger.e(throwable, "getCateList");
-                }
-            });
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_movie_cate, container, false);
-    }
+  @Nullable
+  @Override
+  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    return inflater.inflate(R.layout.fragment_movie_cate, container, false);
+  }
 
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="AutoScrollPager">
-        <attr name="bottomHeight" format="dimension"/>
-        <attr name="bottomBackgroundColor" format="color"/>
-        <attr name="startIndex" format="integer"/>
-    </declare-styleable>
+  <declare-styleable name="AutoScrollPager">
+    <attr name="bottomHeight" format="dimension"/>
+    <attr name="bottomBackgroundColor" format="color"/>
+    <attr name="startIndex" format="integer"/>
+  </declare-styleable>
 </resources>

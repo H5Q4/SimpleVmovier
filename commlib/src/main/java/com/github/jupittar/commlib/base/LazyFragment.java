@@ -4,70 +4,76 @@ import android.os.Bundle;
 
 public abstract class LazyFragment extends BaseFragment {
 
-    private boolean mIsPrepared;
-    private boolean mIsFirstResume = true;
-    private boolean mIsFirstPause = true;
-    private boolean mIsFirstVisibleToUser = true;
+  private boolean mIsPrepared;
+  private boolean mIsFirstResume = true;
+  private boolean mIsFirstPause = true;
+  private boolean mIsFirstVisibleToUser = true;
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+  @Override
+  public void onActivityCreated(Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+    doWithPreparing();
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
+    if (mIsFirstResume) {
+      mIsFirstResume = false;
+      return;
+    }
+    if (getUserVisibleHint()) {
+      onAppear();
+    }
+  }
+
+  @Override
+  public void onPause() {
+    super.onPause();
+    if (getUserVisibleHint()) {
+      onDisappear();
+    }
+  }
+
+  @Override
+  public void setUserVisibleHint(boolean isVisibleToUser) {
+    super.setUserVisibleHint(isVisibleToUser);
+    if (isVisibleToUser) {
+      if (mIsFirstVisibleToUser) {
+        mIsFirstVisibleToUser = false;
         doWithPreparing();
+      } else {
+        onAppear();
+      }
+    } else {
+      if (mIsFirstPause) {
+        mIsFirstPause = false;
+        return;
+      }
+      onDisappear();
     }
+  }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mIsFirstResume) {
-            mIsFirstResume = false;
-            return;
-        }
-        if (getUserVisibleHint()) {
-            onAppear();
-        }
+  private synchronized void doWithPreparing() {
+    if (mIsPrepared) {
+      onFirstAppear();
+    } else {
+      mIsPrepared = true;
     }
+  }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (getUserVisibleHint()) {
-            onDisappear();
-        }
-    }
+  /**
+   * Do some initializations when first appearing
+   */
+  public abstract void onFirstAppear();
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            if (mIsFirstVisibleToUser) {
-                mIsFirstVisibleToUser = false;
-                doWithPreparing();
-            } else {
-                onAppear();
-            }
-        } else {
-            if (mIsFirstPause) {
-                mIsFirstPause = false;
-                return;
-            }
-            onDisappear();
-        }
-    }
+  public void onAppear() {
+  }
 
-    private synchronized void doWithPreparing() {
-        if (mIsPrepared) {
-            onFirstAppear();
-        } else {
-            mIsPrepared = true;
-        }
-    }
+  ;
 
-    /**
-     * Do some initializations when first appearing
-     */
-    public abstract void onFirstAppear();
+  public void onDisappear() {
+  }
 
-    public void onAppear(){};
-
-    public void onDisappear(){};
+  ;
 }

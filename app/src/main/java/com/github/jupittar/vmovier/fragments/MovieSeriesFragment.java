@@ -33,72 +33,72 @@ import rx.schedulers.Schedulers;
  */
 public class MovieSeriesFragment extends LazyFragment {
 
-    @BindView(R.id.recycler_view)
-    RecyclerView mSeriesRecyclerView;
+  @BindView(R.id.recycler_view)
+  RecyclerView mSeriesRecyclerView;
 
-    private SeriesAdapter mSeriesAdapter;
-    private int mPage = 1;
+  private SeriesAdapter mSeriesAdapter;
+  private int mPage = 1;
 
-    public MovieSeriesFragment() {
-    }
+  public MovieSeriesFragment() {
+  }
 
-    @Override
-    public void onFirstAppear() {
-        setUpSeriesRecyclerView();
-    }
+  @Override
+  public void onFirstAppear() {
+    setUpSeriesRecyclerView();
+  }
 
-    private void setUpSeriesRecyclerView() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        mSeriesRecyclerView.setLayoutManager(layoutManager);
-        mSeriesRecyclerView.setHasFixedSize(true);
-        mSeriesAdapter = new SeriesAdapter(getActivity(), R.layout.item_series);
-        mSeriesRecyclerView.setAdapter(mSeriesAdapter);
-        mSeriesAdapter.setOnItemClickListener(new CommonViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Series series = mSeriesAdapter.getDataItem(position);
-                Intent intent = new Intent(getActivity(), SeriesDetailActivity.class);
-                intent.putExtra(SeriesDetailActivity.SERIES_ID, series.getSeriesid());
-                startActivity(intent);
-            }
-        });
-        mSeriesRecyclerView.addOnScrollListener(new EndlessScrollListener() {
-            @Override
-            public void onLoadMore() {
-                mPage++;
-                fetchSeries();
-            }
-        });
+  private void setUpSeriesRecyclerView() {
+    LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+    mSeriesRecyclerView.setLayoutManager(layoutManager);
+    mSeriesRecyclerView.setHasFixedSize(true);
+    mSeriesAdapter = new SeriesAdapter(getActivity(), R.layout.item_series);
+    mSeriesRecyclerView.setAdapter(mSeriesAdapter);
+    mSeriesAdapter.setOnItemClickListener(new CommonViewAdapter.OnItemClickListener() {
+      @Override
+      public void onItemClick(View view, int position) {
+        Series series = mSeriesAdapter.getDataItem(position);
+        Intent intent = new Intent(getActivity(), SeriesDetailActivity.class);
+        intent.putExtra(SeriesDetailActivity.SERIES_ID, series.getSeriesid());
+        startActivity(intent);
+      }
+    });
+    mSeriesRecyclerView.addOnScrollListener(new EndlessScrollListener() {
+      @Override
+      public void onLoadMore() {
+        mPage++;
         fetchSeries();
-    }
+      }
+    });
+    fetchSeries();
+  }
 
-    private void fetchSeries() {
-        Subscription subscription = ServiceGenerator
-            .getVMovieService()
-            .getSeriesList(mPage, 10)
-            .map(new ExtractDataFunc<List<Series>>())
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Action1<List<Series>>() {
-                @Override
-                public void call(List<Series> series) {
-                    if (series != null) {
-                        mSeriesAdapter.addAll(series);
-                    }
-                }
-            }, new Action1<Throwable>() {
-                @Override
-                public void call(Throwable throwable) {
-                    Logger.e(throwable, "get series list");
-                }
-            });
-        addSubscription(subscription);
-    }
+  private void fetchSeries() {
+    Subscription subscription = ServiceGenerator
+        .getVMovieService()
+        .getSeriesList(mPage, 10)
+        .map(new ExtractDataFunc<List<Series>>())
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Action1<List<Series>>() {
+          @Override
+          public void call(List<Series> series) {
+            if (series != null) {
+              mSeriesAdapter.addAll(series);
+            }
+          }
+        }, new Action1<Throwable>() {
+          @Override
+          public void call(Throwable throwable) {
+            Logger.e(throwable, "get series list");
+          }
+        });
+    addSubscription(subscription);
+  }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_movie_series, container, false);
-    }
+  @Nullable
+  @Override
+  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    return inflater.inflate(R.layout.fragment_movie_series, container, false);
+  }
 
 }

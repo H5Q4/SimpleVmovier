@@ -11,59 +11,59 @@ import android.view.View;
  */
 public class SCViewPager extends ViewPager {
 
-    private boolean mEnableScroll;
-    private boolean mWrapContent;
-    private View mCurrentView;
+  private boolean mEnableScroll;
+  private boolean mWrapContent;
+  private View mCurrentView;
 
-    public void setWrapContent(boolean mWrapContent) {
-        this.mWrapContent = mWrapContent;
-        requestLayout();
+  public SCViewPager(Context context, AttributeSet attrs) {
+    super(context, attrs);
+    this.mEnableScroll = true;
+    this.mWrapContent = false;
+  }
+
+  public void setWrapContent(boolean mWrapContent) {
+    this.mWrapContent = mWrapContent;
+    requestLayout();
+  }
+
+  @Override
+  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+    if (!mWrapContent || mCurrentView == null) {
+      return;
+    }
+    int height = 0;
+    mCurrentView.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+    int h = mCurrentView.getMeasuredHeight();
+    if (h > height) {
+      height = h;
     }
 
-    public SCViewPager(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        this.mEnableScroll = true;
-        this.mWrapContent =false;
-    }
+    heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+  }
 
-        if (!mWrapContent || mCurrentView == null) {
-            return;
-        }
-        int height = 0;
-        mCurrentView.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-        int h = mCurrentView.getMeasuredHeight();
-        if (h > height) {
-            height = h;
-        }
+  @Override
+  public boolean onTouchEvent(MotionEvent event) {
+    return this.mEnableScroll && super.onTouchEvent(event);
 
-        heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+  }
 
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
+  @Override
+  public boolean onInterceptTouchEvent(MotionEvent event) {
+    return this.mEnableScroll && super.onInterceptTouchEvent(event);
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return this.mEnableScroll && super.onTouchEvent(event);
+  }
 
-    }
+  public void setScrollEnabled(boolean enabled) {
+    this.mEnableScroll = enabled;
+  }
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent event) {
-        return this.mEnableScroll && super.onInterceptTouchEvent(event);
-
-    }
-
-    public void setScrollEnabled(boolean enabled) {
-        this.mEnableScroll = enabled;
-    }
-
-    public void measureCurrentView(View currentView) {
-        mCurrentView = currentView;
-        requestLayout();
-    }
+  public void measureCurrentView(View currentView) {
+    mCurrentView = currentView;
+    requestLayout();
+  }
 
 }

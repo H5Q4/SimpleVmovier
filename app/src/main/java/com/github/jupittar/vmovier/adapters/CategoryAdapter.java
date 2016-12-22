@@ -13,19 +13,19 @@ import com.github.jupittar.vmovier.models.Category;
 
 public class CategoryAdapter extends CommonViewAdapter<Category> {
 
-    public CategoryAdapter(Context context, @LayoutRes int layoutId) {
-        super(context, layoutId);
-    }
+  public CategoryAdapter(Context context, @LayoutRes int layoutId) {
+    super(context, layoutId);
+  }
 
-    @Override
-    public void convertView(CommonViewHolder holder, Category item) {
-        TextView titleTextView = holder.getView(R.id.title_tv);
-        titleTextView.setText(String.format("#%s#", item.getCatename()));
-        AspectRatioImageView iconImageView = holder.getView(R.id.icon_iv);
-        iconImageView.setAspectRatio(AspectRatioImageView.SQUARE);
-        Glide.with(mContext)
-            .load(item.getIcon())
-            .centerCrop()
-            .into(iconImageView);
-    }
+  @Override
+  public void convertView(CommonViewHolder holder, Category item) {
+    TextView titleTextView = holder.getView(R.id.title_tv);
+    titleTextView.setText(String.format("#%s#", item.getCatename()));
+    AspectRatioImageView iconImageView = holder.getView(R.id.icon_iv);
+    iconImageView.setAspectRatio(AspectRatioImageView.SQUARE);
+    Glide.with(mContext)
+        .load(item.getIcon())
+        .centerCrop()
+        .into(iconImageView);
+  }
 }

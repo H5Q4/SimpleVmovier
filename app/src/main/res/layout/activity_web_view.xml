@@ -7,12 +7,13 @@
     android:orientation="vertical"
     tools:context="com.github.jupittar.vmovier.activities.WebViewActivity">
 
-    <include android:id="@+id/toolbar"
-             layout="@layout/title_toolbar"/>
+  <include
+      android:id="@+id/toolbar"
+      layout="@layout/title_toolbar"/>
 
-    <com.github.lzyzsd.jsbridge.BridgeWebView
-        android:id="@+id/web_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+  <com.github.lzyzsd.jsbridge.BridgeWebView
+      android:id="@+id/web_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
 
 </LinearLayout>

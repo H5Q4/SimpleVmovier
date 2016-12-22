@@ -13,44 +13,44 @@ import rx.subjects.Subject;
  */
 public class RxBus {
 
-    private final Subject<Object, Object> mBus = new SerializedSubject<>(PublishSubject.create());
+  private final Subject<Object, Object> mBus = new SerializedSubject<>(PublishSubject.create());
 
-    private RxBus() {
+  private RxBus() {
 
+  }
+
+  public static RxBus getDefault() {
+    return SingletonHolder.INSTANCE;
+  }
+
+  public void post(String tag, Object o) {
+    if (mBus.hasObservers()) {
+      mBus.onNext(new BusEvent(tag, o));
     }
+  }
 
-    private static class SingletonHolder {
-        static final RxBus INSTANCE = new RxBus();
-    }
-
-    public static RxBus getDefault() {
-        return SingletonHolder.INSTANCE;
-    }
-
-    public void post(String tag, Object o) {
-        if (mBus.hasObservers()) {
-            mBus.onNext(new BusEvent(tag, o));
+  @SuppressWarnings("unchecked")
+  public <T> Observable<T> toObservable(final String tag, final Class<T> tClass) {
+    return mBus.filter(new Func1<Object, Boolean>() {
+      @Override
+      public Boolean call(Object o) {
+        if (!(o instanceof BusEvent)) {
+          return false;
         }
-    }
+        BusEvent busEvent = (BusEvent) o;
+        return tClass.isInstance(busEvent.getObject()) && tag != null && tag.equals(busEvent.getTag());
+      }
+    }).map(new Func1<Object, T>() {
+      @Override
+      public T call(Object o) {
+        BusEvent busEvent = (BusEvent) o;
+        return (T) busEvent.getObject();
+      }
+    });
+  }
 
-    @SuppressWarnings("unchecked")
-    public <T> Observable<T> toObservable(final String tag, final Class<T> tClass) {
-        return mBus.filter(new Func1<Object, Boolean>() {
-            @Override
-            public Boolean call(Object o) {
-                if (!(o instanceof BusEvent)) {
-                    return false;
-                }
-                BusEvent busEvent = (BusEvent) o;
-                return tClass.isInstance(busEvent.getObject()) && tag != null && tag.equals(busEvent.getTag());
-            }
-        }).map(new Func1<Object, T>() {
-            @Override
-            public T call(Object o) {
-                BusEvent busEvent = (BusEvent) o;
-                return (T) busEvent.getObject();
-            }
-        });
-    }
+  private static class SingletonHolder {
+    static final RxBus INSTANCE = new RxBus();
+  }
 
 }

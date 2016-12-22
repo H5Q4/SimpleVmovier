@@ -1,6 +1,5 @@
 package com.github.jupittar.vmovier.fragments;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +21,7 @@ import com.github.jupittar.vmovier.network.ServiceGenerator;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
+
 import butterknife.BindView;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -30,94 +30,92 @@ import rx.schedulers.Schedulers;
 
 public class BackstageByCateFragment extends LazyFragment {
 
-    private static final String ARG_PARAM_CATE_ID = "cate_id";
+  private static final String ARG_PARAM_CATE_ID = "cate_id";
 
-    @BindView(R.id.recycler_view)
-    RecyclerView mRecyclerView;
+  @BindView(R.id.recycler_view)
+  RecyclerView mRecyclerView;
+  BackstageInCateAdapter mAdapter;
+  private String mCateId;
+  private int mPage = 1;
 
-    private String mCateId;
-    private int mPage = 1;
-    BackstageInCateAdapter mAdapter;
+  public BackstageByCateFragment() {
+    // Required empty public constructor
+  }
 
+  public static BackstageByCateFragment newInstance(String cateId) {
+    BackstageByCateFragment fragment = new BackstageByCateFragment();
+    Bundle args = new Bundle();
+    args.putString(ARG_PARAM_CATE_ID, cateId);
+    fragment.setArguments(args);
+    return fragment;
+  }
 
-    public BackstageByCateFragment() {
-        // Required empty public constructor
-    }
+  @Override
+  public void onFirstAppear() {
+    setUpRecyclerView();
+    fetchData();
+  }
 
-    public static BackstageByCateFragment newInstance(String cateId) {
-        BackstageByCateFragment fragment = new BackstageByCateFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM_CATE_ID, cateId);
-        fragment.setArguments(args);
-        return fragment;
-    }
+  private void fetchData() {
+    Subscription subscription = ServiceGenerator
+        .getVMovieService()
+        .getBackstageList(mPage, 10, mCateId)
+        .map(new ExtractDataFunc<List<Movie>>())
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Action1<List<Movie>>() {
+          @Override
+          public void call(List<Movie> movies) {
+            if (movies != null) {
+              mAdapter.addAll(movies);
+            }
+          }
+        }, new Action1<Throwable>() {
+          @Override
+          public void call(Throwable throwable) {
+            Logger.e(throwable, "get backstage list");
+          }
+        });
+    addSubscription(subscription);
+  }
 
-    @Override
-    public void onFirstAppear() {
-        setUpRecyclerView();
+  private void setUpRecyclerView() {
+    LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+    mRecyclerView.setLayoutManager(layoutManager);
+    mAdapter = new BackstageInCateAdapter(getActivity(), R.layout.item_backstage);
+    mAdapter.setOnItemClickListener(new CommonViewAdapter.OnItemClickListener() {
+      @Override
+      public void onItemClick(View view, int position) {
+        Intent intent = new Intent(getActivity(), BackstageDetailActivity.class);
+        intent.putExtra(BackstageDetailActivity.DETAIL_URL,
+            mAdapter.getDataItem(position).getRequest_url());
+        intent.putExtra(BackstageDetailActivity.POST_ID, mAdapter.getDataItem(position).getPostid());
+        startActivity(intent);
+      }
+    });
+    mRecyclerView.setAdapter(mAdapter);
+    mRecyclerView.setHasFixedSize(true);
+    mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+    mRecyclerView.addOnScrollListener(new EndlessScrollListener() {
+      @Override
+      public void onLoadMore() {
+        mPage++;
         fetchData();
-    }
+      }
+    });
+  }
 
-    private void fetchData() {
-        Subscription subscription = ServiceGenerator
-                .getVMovieService()
-                .getBackstageList(mPage, 10, mCateId)
-                .map(new ExtractDataFunc<List<Movie>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<Movie>>() {
-                    @Override
-                    public void call(List<Movie> movies) {
-                        if (movies != null) {
-                            mAdapter.addAll(movies);
-                        }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        Logger.e(throwable, "get backstage list");
-                    }
-                });
-        addSubscription(subscription);
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    if (getArguments() != null) {
+      mCateId = getArguments().getString(ARG_PARAM_CATE_ID);
     }
+  }
 
-    private void setUpRecyclerView() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(layoutManager);
-        mAdapter = new BackstageInCateAdapter(getActivity(), R.layout.item_backstage);
-        mAdapter.setOnItemClickListener(new CommonViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Intent intent = new Intent(getActivity(), BackstageDetailActivity.class);
-                intent.putExtra(BackstageDetailActivity.DETAIL_URL,
-                        mAdapter.getDataItem(position).getRequest_url());
-                intent.putExtra(BackstageDetailActivity.POST_ID, mAdapter.getDataItem(position).getPostid());
-                startActivity(intent);
-            }
-        });
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
-        mRecyclerView.addOnScrollListener(new EndlessScrollListener() {
-            @Override
-            public void onLoadMore() {
-                mPage++;
-                fetchData();
-            }
-        });
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mCateId = getArguments().getString(ARG_PARAM_CATE_ID);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_backstage_by_cate, container, false);
-    }
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                           Bundle savedInstanceState) {
+    return inflater.inflate(R.layout.fragment_backstage_by_cate, container, false);
+  }
 }

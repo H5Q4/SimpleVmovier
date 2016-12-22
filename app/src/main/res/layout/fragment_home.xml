@@ -1,24 +1,24 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
              tools:context=".fragments.HomeFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+  <android.support.v7.widget.RecyclerView
+      android:id="@+id/recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
 
-    <com.github.jupittar.commlib.custom.LoadingImageView
-        android:id="@+id/loading_iv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:src="@drawable/loading_logo"
-        app:anim_auto_start="true"
-        app:mask_color="?colorAccent" />
+  <com.github.jupittar.commlib.custom.LoadingImageView
+      android:id="@+id/loading_iv"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:src="@drawable/loading_logo"
+      app:anim_auto_start="true"
+      app:mask_color="?colorAccent"/>
 
-    <include layout="@layout/error_layout"/>
+  <include layout="@layout/error_layout"/>
 
 </FrameLayout>

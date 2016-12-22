@@ -14,32 +14,32 @@ import java.util.List;
 
 public class AndroidCalledByJs {
 
-    private Context mContext;
+  private Context mContext;
 
-    public AndroidCalledByJs(Context context) {
-        mContext = context;
-    }
+  public AndroidCalledByJs(Context context) {
+    mContext = context;
+  }
 
-    @JavascriptInterface
-    public void onClickRecommendMovie(String postId) {
-        Intent intent = new Intent(mContext, MovieDetailActivity.class);
-        intent.putExtra(MovieDetailActivity.POST_ID, postId);
-        mContext.startActivity(intent);
-    }
+  @JavascriptInterface
+  public void onClickRecommendMovie(String postId) {
+    Intent intent = new Intent(mContext, MovieDetailActivity.class);
+    intent.putExtra(MovieDetailActivity.POST_ID, postId);
+    mContext.startActivity(intent);
+  }
 
-    @JavascriptInterface
-    public void onClickMovieInBackstage(int index) {
-        List<MovieDetail.Content.Video> videos = BackstageDetailActivity.mVideos;
-        if (videos == null) {
-            return;
-        }
-        Intent intent = new Intent(mContext, VideoPlayActivity.class);
-        intent.putExtra(VideoPlayActivity.VIDEO_URL, videos.get(index).getQiniu_url());
-        mContext.startActivity(intent);
+  @JavascriptInterface
+  public void onClickMovieInBackstage(int index) {
+    List<MovieDetail.Content.Video> videos = BackstageDetailActivity.mVideos;
+    if (videos == null) {
+      return;
     }
+    Intent intent = new Intent(mContext, VideoPlayActivity.class);
+    intent.putExtra(VideoPlayActivity.VIDEO_URL, videos.get(index).getQiniu_url());
+    mContext.startActivity(intent);
+  }
 
-    @JavascriptInterface
-    public void showToast(String msg) {
-        ToastUtils.showShort(mContext, msg);
-    }
+  @JavascriptInterface
+  public void showToast(String msg) {
+    ToastUtils.showShort(mContext, msg);
+  }
 }
